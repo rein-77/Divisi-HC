@@ -1,4 +1,12 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    @php
+        $suratMasukCreate = \Illuminate\Support\Facades\Route::has('surat-masuk.create')
+            ? route('surat-masuk.create')
+            : url('/surat-masuk/create');
+        $suratKeluarCreate = \Illuminate\Support\Facades\Route::has('surat-keluar.create')
+            ? route('surat-keluar.create')
+            : url('/surat-keluar/create');
+    @endphp
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -14,6 +22,14 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="$suratMasukCreate" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
+                        {{ __('Surat Masuk') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="$suratKeluarCreate" :active="request()->routeIs('surat-keluar.*') || request()->is('surat-keluar*')">
+                        {{ __('Surat Keluar') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -69,6 +85,14 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="$suratMasukCreate" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
+                {{ __('Surat Masuk') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="$suratKeluarCreate" :active="request()->routeIs('surat-keluar.*') || request()->is('surat-keluar*')">
+                {{ __('Surat Keluar') }}
             </x-responsive-nav-link>
         </div>
 
