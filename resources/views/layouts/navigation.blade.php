@@ -1,11 +1,11 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     @php
-        $suratMasukCreate = \Illuminate\Support\Facades\Route::has('surat-masuk.create')
-            ? route('surat-masuk.create')
-            : url('/surat-masuk/create');
-        $suratKeluarCreate = \Illuminate\Support\Facades\Route::has('surat-keluar.create')
-            ? route('surat-keluar.create')
-            : url('/surat-keluar/create');
+        $suratMasukIndex = \Illuminate\Support\Facades\Route::has('surat-masuk.index')
+            ? route('surat-masuk.index')
+            : url('/surat-masuk');
+        $suratKeluarCreate = \Illuminate\Support\Facades\Route::has('surat-keluar')
+            ? route('surat-keluar')
+            : url('/surat-keluar');
     @endphp
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +24,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="$suratMasukCreate" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
+                    <x-nav-link :href="$suratMasukIndex" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
                         {{ __('Surat Masuk') }}
                     </x-nav-link>
 
@@ -87,7 +87,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="$suratMasukCreate" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
+            <x-responsive-nav-link :href="$suratMasukIndex" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
                 {{ __('Surat Masuk') }}
             </x-responsive-nav-link>
 

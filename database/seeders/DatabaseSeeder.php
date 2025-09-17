@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         // Panggil seeder Admin agar membuat akun admin default
         $this->call([
-            AdminSeeder::class,
+            // AdminSeeder::class,
+            DemoDataSeeder::class,
         ]);
     }
 }
