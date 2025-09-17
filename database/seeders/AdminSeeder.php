@@ -29,7 +29,7 @@ class AdminSeeder extends Seeder
                     'kota_kabupaten' => 'Jakarta',
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ], 'unit_kerja_id');
             }
 
             // Pastikan Bagian/Seksi ada
@@ -45,7 +45,7 @@ class AdminSeeder extends Seeder
                     'unit_kerja_id' => $unitKerjaId,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ], 'bagian_seksi_id');
             }
 
             // Pastikan Jabatan ada
@@ -60,7 +60,7 @@ class AdminSeeder extends Seeder
                     'jabatan_kode' => $jabatanKode,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ], 'jabatan_id');
             }
 
             // Buat atau perbarui user admin
