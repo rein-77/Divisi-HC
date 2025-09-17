@@ -13,9 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Panggil seeder Admin agar membuat akun admin default
+        
         $this->call([
-            // AdminSeeder::class,
+            // Panggil seeder Admin agar membuat akun admin default
+            AdminSeeder::class,
+            
+            // Panggil seeder DemoData untuk membuat data contoh
             DemoDataSeeder::class,
         ]);
     }

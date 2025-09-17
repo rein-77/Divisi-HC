@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SuratMasuk;
+use Illuminate\Support\Facades\Storage;
 
 class SuratMasukController extends Controller
 {
@@ -27,8 +28,8 @@ class SuratMasukController extends Controller
 
         // Urutan default terbaru berdasarkan tanggal diterima
         $suratMasuk = $query->orderByDesc('tanggal_diterima')
-                           ->paginate(10)
-                           ->withQueryString();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('surat-masuk.index', [
             'suratMasuk' => $suratMasuk,
@@ -41,7 +42,7 @@ class SuratMasukController extends Controller
      */
     public function create()
     {
-        //
+        return view('surat-masuk.create');
     }
 
     /**
@@ -49,7 +50,30 @@ class SuratMasukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'surat_masuk_nomor' => 'required|string|max:255|unique:surat_masuk,surat_masuk_nomor',
+            'surat_masuk_tanggal' => 'required|date',
+            'tanggal_diterima' => 'required|date',
+            'pengirim' => 'required|string|max:255',
+            'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
+            'perihal' => 'required|string',
+            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        // Handle file upload
+        if ($request->hasFile('berkas')) {
+            $file = $request->file('berkas');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('surat-masuk', $fileName, 'public');
+            $validated['berkas'] = $filePath;
+        }
+
+        $validated['user_id_created'] = auth()->id();
+
+        SuratMasuk::create($validated);
+
+        return redirect()->route('surat-masuk.index')
+            ->with('success', 'Surat masuk berhasil ditambahkan.');
     }
 
     /**
@@ -57,7 +81,8 @@ class SuratMasukController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $suratMasuk = SuratMasuk::with('creator')->findOrFail($id);
+        return view('surat-masuk.show', compact('suratMasuk'));
     }
 
     /**
@@ -65,7 +90,8 @@ class SuratMasukController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $suratMasuk = SuratMasuk::findOrFail($id);
+        return view('surat-masuk.edit', compact('suratMasuk'));
     }
 
     /**
@@ -73,7 +99,35 @@ class SuratMasukController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $suratMasuk = SuratMasuk::findOrFail($id);
+
+        $validated = $request->validate([
+            'surat_masuk_nomor' => 'required|string|max:255|unique:surat_masuk,surat_masuk_nomor,' . $id . ',surat_masuk_id',
+            'surat_masuk_tanggal' => 'required|date',
+            'tanggal_diterima' => 'required|date',
+            'pengirim' => 'required|string|max:255',
+            'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
+            'perihal' => 'required|string',
+            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        // Handle file upload
+        if ($request->hasFile('berkas')) {
+            // Delete old file if exists
+            if ($suratMasuk->berkas && Storage::disk('public')->exists($suratMasuk->berkas)) {
+                Storage::disk('public')->delete($suratMasuk->berkas);
+            }
+
+            $file = $request->file('berkas');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('surat-masuk', $fileName, 'public');
+            $validated['berkas'] = $filePath;
+        }
+
+        $suratMasuk->update($validated);
+
+        return redirect()->route('surat-masuk.index')
+            ->with('success', 'Surat masuk berhasil diperbarui.');
     }
 
     /**
@@ -81,6 +135,9 @@ class SuratMasukController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $suratMasuk = SuratMasuk::findOrFail($id);
+        $suratMasuk->delete(); // Soft delete
+
+        return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
     }
 }

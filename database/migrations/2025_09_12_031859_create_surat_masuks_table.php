@@ -23,7 +23,11 @@ return new class extends Migration {
             // FK ke user yang membuat surat
             $table->foreignId('user_id_created')->constrained('user', 'user_id');
 
+            $table->softDeletes(); // Menambahkan kolom deleted_at untuk soft deletes
+
             $table->timestamps();
+
+            
         });
     }
 
