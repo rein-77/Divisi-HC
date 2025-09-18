@@ -79,9 +79,13 @@ class DemoDataSeeder extends Seeder
 
             // Seed 7 Surat Masuk
             $today = now();
-            for ($i = 1; $i <= 7; $i++) {
-                $nomor = sprintf('SM-2025-%03d', $i);
-                $tanggalSurat = $today->copy()->subDays(14 - $i);
+            $destinations = ['SM-PPH', 'SM-PP', 'SM-KM'];
+            
+            // Data tahun 2025 (nomor 1-5)
+            for ($i = 1; $i <= 5; $i++) {
+                $destinationCode = $destinations[($i - 1) % count($destinations)];
+                $nomor = sprintf('%03d/%s/2025', $i, $destinationCode);
+                $tanggalSurat = $today->copy()->subDays(20 - $i);
                 $tanggalDiterima = $tanggalSurat->copy()->addDays(rand(0, 3));
 
                 DB::table('surat_masuk')->insert([
@@ -90,7 +94,28 @@ class DemoDataSeeder extends Seeder
                     'tanggal_diterima' => $tanggalDiterima->toDateString(),
                     'pengirim' => 'PT Contoh ' . chr(64 + $i),
                     'tujuan' => 'Divisi HC',
-                    'perihal' => 'Permohonan informasi nomor ' . $i,
+                    'perihal' => 'Permohonan informasi nomor ' . $i . ' tahun 2025',
+                    'berkas' => null,
+                    'user_id_created' => $pegawaiId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+            
+            // Data tahun 2026 (nomor 1-2) - harus muncul di atas meskipun nomor lebih kecil
+            for ($i = 1; $i <= 2; $i++) {
+                $destinationCode = $destinations[($i - 1) % count($destinations)];
+                $nomor = sprintf('%03d/%s/2026', $i, $destinationCode);
+                $tanggalSurat = $today->copy()->addDays($i);
+                $tanggalDiterima = $tanggalSurat->copy()->addDays(rand(0, 3));
+
+                DB::table('surat_masuk')->insert([
+                    'surat_masuk_nomor' => $nomor,
+                    'surat_masuk_tanggal' => $tanggalSurat->toDateString(),
+                    'tanggal_diterima' => $tanggalDiterima->toDateString(),
+                    'pengirim' => 'PT Masa Depan ' . chr(64 + $i),
+                    'tujuan' => 'Divisi HC',
+                    'perihal' => 'Permohonan informasi nomor ' . $i . ' tahun 2026',
                     'berkas' => null,
                     'user_id_created' => $pegawaiId,
                     'created_at' => now(),

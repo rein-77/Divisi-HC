@@ -26,8 +26,15 @@ class SuratMasukController extends Controller
             });
         }
 
-        // Urutan default terbaru berdasarkan tanggal diterima
-        $suratMasuk = $query->orderByDesc('tanggal_diterima')
+        // Urutan berdasarkan nomor surat terbaru (tahun > nomor urut)
+        // Hierarki: 001/SM-KM/2026 > 088/SM-KM/2025
+        // Menggunakan raw SQL untuk ekstrak tahun dan nomor dari format: 001/SM-KM/2025
+        // 1. Tahun (dari posisi terakhir setelah '/') - DESC (terbaru dulu)
+        // 2. Nomor urut (dari posisi pertama sebelum '/') - DESC (terbesar dulu)
+        $suratMasuk = $query->orderByRaw("
+            CAST(SUBSTRING_INDEX(surat_masuk_nomor, '/', -1) AS UNSIGNED) DESC,
+            CAST(SUBSTRING_INDEX(surat_masuk_nomor, '/', 1) AS UNSIGNED) DESC
+        ")
             ->paginate(10)
             ->withQueryString();
 
@@ -51,7 +58,6 @@ class SuratMasukController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'surat_masuk_nomor' => 'required|string|max:255|unique:surat_masuk,surat_masuk_nomor',
             'surat_masuk_tanggal' => 'required|date',
             'tanggal_diterima' => 'required|date',
             'pengirim' => 'required|string|max:255',
@@ -59,6 +65,9 @@ class SuratMasukController extends Controller
             'perihal' => 'required|string',
             'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
         ]);
+
+        // Generate nomor surat masuk otomatis dengan kode tujuan (unified numbering)
+        $validated['surat_masuk_nomor'] = SuratMasuk::generateNomorSurat($validated['tujuan']);
 
         // Handle file upload
         if ($request->hasFile('berkas')) {
@@ -102,7 +111,6 @@ class SuratMasukController extends Controller
         $suratMasuk = SuratMasuk::findOrFail($id);
 
         $validated = $request->validate([
-            'surat_masuk_nomor' => 'required|string|max:255|unique:surat_masuk,surat_masuk_nomor,' . $id . ',surat_masuk_id',
             'surat_masuk_tanggal' => 'required|date',
             'tanggal_diterima' => 'required|date',
             'pengirim' => 'required|string|max:255',
@@ -110,6 +118,11 @@ class SuratMasukController extends Controller
             'perihal' => 'required|string',
             'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
         ]);
+
+        // Update nomor surat jika tujuan berubah, tetapi pertahankan nomor urut
+        if ($validated['tujuan'] !== $suratMasuk->tujuan) {
+            $validated['surat_masuk_nomor'] = $suratMasuk->updateNomorSurat($validated['tujuan']);
+        }
 
         // Handle file upload
         if ($request->hasFile('berkas')) {
@@ -139,5 +152,24 @@ class SuratMasukController extends Controller
         $suratMasuk->delete(); // Soft delete
 
         return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
+    }
+
+    /**
+     * Mendapatkan preview nomor surat masuk otomatis berdasarkan tujuan
+     */
+    public function previewNomor(Request $request)
+    {
+        $tujuan = $request->get('tujuan');
+        
+        if (!$tujuan) {
+            return response()->json(['nomor' => '']);
+        }
+
+        try {
+            $nomor = SuratMasuk::getPreviewNomor($tujuan);
+            return response()->json(['nomor' => $nomor]);
+        } catch (\Exception $e) {
+            return response()->json(['nomor' => 'Error: ' . $e->getMessage()]);
+        }
     }
 }

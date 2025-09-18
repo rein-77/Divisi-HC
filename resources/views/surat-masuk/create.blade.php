@@ -27,12 +27,14 @@
                                 id="surat_masuk_nomor" 
                                 name="surat_masuk_nomor" 
                                 type="text" 
-                                class="mt-1 block w-full" 
-                                :value="old('surat_masuk_nomor')" 
-                                required 
-                                autofocus 
-                                placeholder="Contoh: 001/SK/2024"
+                                class="mt-1 block w-full bg-gray-100" 
+                                value="" 
+                                readonly
+                                placeholder="Pilih tujuan untuk melihat preview nomor"
                             />
+                            <p class="mt-1 text-sm text-gray-500">
+                                Nomor surat akan dibuat otomatis berdasarkan tujuan yang dipilih.
+                            </p>
                             <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
                         </div>
 
@@ -155,4 +157,53 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tujuanSelect = document.getElementById('tujuan');
+            const nomorInput = document.getElementById('surat_masuk_nomor');
+            
+            // Fungsi untuk update preview nomor surat berdasarkan tujuan
+            function updatePreviewNomor() {
+                const tujuan = tujuanSelect.value;
+                
+                if (!tujuan) {
+                    nomorInput.value = '';
+                    nomorInput.placeholder = 'Pilih tujuan untuk melihat preview nomor';
+                    return;
+                }
+                
+                // Tampilkan loading state
+                nomorInput.value = 'Generating preview...';
+                nomorInput.placeholder = '';
+                
+                // Fetch preview nomor berdasarkan tujuan
+                fetch(`{{ route('surat-masuk.preview-nomor') }}?tujuan=${encodeURIComponent(tujuan)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    nomorInput.value = data.nomor || '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    nomorInput.value = '';
+                    nomorInput.placeholder = 'Error generating preview';
+                });
+            }
+            
+            // Listen perubahan tujuan
+            tujuanSelect.addEventListener('change', updatePreviewNomor);
+            
+            // Inisialisasi jika tujuan sudah dipilih (saat validation error)
+            if (tujuanSelect.value) {
+                updatePreviewNomor();
+            }
+        });
+    </script>
 </x-app-layout>

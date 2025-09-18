@@ -56,12 +56,16 @@
                                 id="surat_masuk_nomor" 
                                 name="surat_masuk_nomor" 
                                 type="text" 
-                                class="mt-1 block w-full" 
+                                class="mt-1 block w-full bg-gray-100" 
                                 :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)" 
-                                required 
-                                autofocus 
-                                placeholder="Contoh: 001/SK/2024"
+                                readonly
                             />
+                            <p class="mt-1 text-sm text-gray-500">
+                                <svg class="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Nomor urut akan dipertahankan, tetapi kode tujuan (SM-KM/SM-PP/SM-PPH) akan berubah sesuai tujuan yang dipilih
+                            </p>
                             <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
                         </div>
 
@@ -207,4 +211,43 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tujuanSelect = document.getElementById('tujuan');
+            const nomorInput = document.getElementById('surat_masuk_nomor');
+            const originalNomor = nomorInput.value;
+            
+            // Mapping tujuan ke kode
+            const codes = {
+                'Bagian Kompensasi & Manfaat': 'SM-KM',
+                'Bagian Pendidikan & Pelatihan': 'SM-PP',
+                'Bagian Penerimaan & Pengembangan Human Capital': 'SM-PPH'
+            };
+            
+            function updateNomorPreview() {
+                const selectedTujuan = tujuanSelect.value;
+                
+                if (selectedTujuan && codes[selectedTujuan]) {
+                    // Ekstrak nomor urut dan tahun dari nomor asli
+                    const parts = originalNomor.split('/');
+                    if (parts.length >= 3) {
+                        const nomorUrut = parts[0]; // 001
+                        const tahun = parts[2];     // 2025
+                        const newCode = codes[selectedTujuan];
+                        
+                        // Update preview nomor
+                        const newNomor = `${nomorUrut}/${newCode}/${tahun}`;
+                        nomorInput.value = newNomor;
+                    }
+                } else {
+                    // Kembalikan ke nomor asli jika tidak ada tujuan dipilih
+                    nomorInput.value = originalNomor;
+                }
+            }
+            
+            // Update preview ketika tujuan berubah
+            tujuanSelect.addEventListener('change', updateNomorPreview);
+        });
+    </script>
 </x-app-layout>
