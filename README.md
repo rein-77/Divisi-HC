@@ -1,61 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Divisi-HC - Sistem Persuratan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem aplikasi web untuk mengelola persuratan di Divisi Human Capital (HC). Dibangun menggunakan Laravel 11 dengan Tailwind CSS untuk antarmuka yang modern dan responsif.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Manajemen Surat Masuk**: Tambah, edit, lihat, dan hapus surat masuk dengan fitur soft delete
+- **Upload Berkas**: Mendukung file PDF, DOC, DOCX, JPG, JPEG, PNG (maksimal 10MB)
+- **Pencarian**: Cari surat berdasarkan nomor, pengirim, perihal, dll.
+- **Autentikasi**: Sistem login/logout dengan middleware auth
+- **Dashboard**: Halaman utama dengan ringkasan data
+- **Responsive Design**: Antarmuka yang responsif untuk desktop dan mobile
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Persyaratan Sistem
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP >= 8.1
+- Composer
+- Node.js & npm
+- MySQL atau database lain yang didukung Laravel
+- Git
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clone Repository**:
+   ```bash
+   git clone https://github.com/rein-77/Divisi-HC.git
+   cd Divisi-HC
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. **Install Dependensi PHP**:
+   ```bash
+   composer install
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Install Dependensi Node.js**:
+   ```bash
+   npm install
+   ```
 
-## Laravel Sponsors
+4. **Setup Environment**:
+   - Copy file `.env.example` ke `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Edit [`.env`](.env ) dan konfigurasikan database, APP_NAME, dll.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. **Generate Key**:
+   ```bash
+   php artisan key:generate
+   ```
 
-### Premium Partners
+6. **Jalankan Migrasi dan Seeder**:
+   ```bash
+   php artisan migrate
+   php artisan db:seed 
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+7. **Buat Storage Link** (untuk upload file):
+   ```bash
+   php artisan storage:link
+   ```
 
-## Contributing
+## Menjalankan Aplikasi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Jalankan Server Laravel**:
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi akan berjalan di `http://localhost:8000`
 
-## Code of Conduct
+2. **Compile Assets (Tailwind CSS)**:
+   ```bash
+   npm run dev
+   ```
+   Atau untuk production:
+   ```bash
+   npm run build
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Akses Aplikasi**:
+   - Buka browser dan kunjungi `http://localhost:8000`
+   - Login dengan akun admin (default: username `admin`, password `admin`)
 
-## Security Vulnerabilities
+## Struktur Database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **users**: Tabel pengguna (custom primary key `user_id`)
+- **surat_masuk**: Tabel surat masuk dengan soft deletes
+- **unit_kerja, bagian_seksi, jabatan**: Tabel referensi (untuk ekspansi fitur)
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
