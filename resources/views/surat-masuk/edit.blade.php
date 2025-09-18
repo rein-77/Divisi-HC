@@ -182,7 +182,7 @@
                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                             />
                             <p class="mt-1 text-sm text-gray-500">
-                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 5MB.
+                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 10MB.
                                 @if($suratMasuk->berkas)
                                     <br><strong>Catatan:</strong> Upload file baru akan mengganti berkas yang sudah ada.
                                 @endif

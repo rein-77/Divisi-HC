@@ -133,7 +133,7 @@
                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                             />
                             <p class="mt-1 text-sm text-gray-500">
-                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 5MB.
+                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 10MB.
                             </p>
                             <x-input-error class="mt-2" :messages="$errors->get('berkas')" />
                         </div>

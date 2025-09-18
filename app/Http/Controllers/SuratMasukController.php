@@ -57,7 +57,7 @@ class SuratMasukController extends Controller
             'pengirim' => 'required|string|max:255',
             'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
             'perihal' => 'required|string',
-            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // 5MB max
+            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
         ]);
 
         // Handle file upload
@@ -108,7 +108,7 @@ class SuratMasukController extends Controller
             'pengirim' => 'required|string|max:255',
             'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
             'perihal' => 'required|string',
-            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // 5MB max
+            'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
         ]);
 
         // Handle file upload
