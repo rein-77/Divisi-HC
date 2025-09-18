@@ -72,7 +72,14 @@ class SuratMasukController extends Controller
         // Handle file upload
         if ($request->hasFile('berkas')) {
             $file = $request->file('berkas');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            
+            // Buat nama file berdasarkan nomor surat (hapus karakter yang tidak diinginkan)
+            // Format: 001_SM_KM_2025_20250918_143022.pdf
+            // Menghindari masalah spasi dan karakter khusus di URL
+            $cleanNomor = str_replace(['/', '-', ' '], '_', $validated['surat_masuk_nomor']);
+            $fileName = $cleanNomor . '_' . date('Ymd_His') . '.' . $extension;
+            
             $filePath = $file->storeAs('surat-masuk', $fileName, 'public');
             $validated['berkas'] = $filePath;
         }
@@ -132,7 +139,17 @@ class SuratMasukController extends Controller
             }
 
             $file = $request->file('berkas');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            
+            // Gunakan nomor surat yang baru jika tujuan berubah, atau nomor lama jika tidak berubah
+            $nomorSurat = isset($validated['surat_masuk_nomor']) ? $validated['surat_masuk_nomor'] : $suratMasuk->surat_masuk_nomor;
+            
+            // Buat nama file berdasarkan nomor surat (hapus karakter yang tidak diinginkan)
+            // Format: 001_SM_KM_2025_20250918_143022.pdf
+            // Menghindari masalah spasi dan karakter khusus di URL
+            $cleanNomor = str_replace(['/', '-', ' '], '_', $nomorSurat);
+            $fileName = $cleanNomor . '_' . date('Ymd_His') . '.' . $extension;
+            
             $filePath = $file->storeAs('surat-masuk', $fileName, 'public');
             $validated['berkas'] = $filePath;
         }
