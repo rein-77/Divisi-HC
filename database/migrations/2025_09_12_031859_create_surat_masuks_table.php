@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('surat_masuk', function (Blueprint $table) {
             $table->id('surat_masuk_id');
+            $table->string('no_agenda');
             $table->string('surat_masuk_nomor');
             $table->date('surat_masuk_tanggal');
             $table->date('tanggal_diterima');

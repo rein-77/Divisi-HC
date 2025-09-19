@@ -75,6 +75,10 @@
                                 <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Surat</h3>
                                 <dl class="space-y-4">
                                     <div>
+                                        <dt class="text-sm font-medium text-gray-500">No Agenda</dt>
+                                        <dd class="mt-1 text-sm text-gray-900 font-mono bg-blue-50 px-3 py-2 rounded-md border border-blue-200">{{ $suratMasuk->no_agenda }}</dd>
+                                    </div>
+                                    <div>
                                         <dt class="text-sm font-medium text-gray-500">Nomor Surat</dt>
                                         <dd class="mt-1 text-sm text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded-md">{{ $suratMasuk->surat_masuk_nomor }}</dd>
                                     </div>

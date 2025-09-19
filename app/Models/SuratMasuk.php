@@ -49,6 +49,35 @@ class SuratMasuk extends Model
     ];
 
     /**
+     * Boot method untuk auto-generate no_agenda.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->no_agenda = self::generateNoAgenda();
+        });
+    }
+
+    /**
+     * Generate nomor agenda otomatis dengan format 001/2025.
+     *
+     * @return string
+     */
+    public static function generateNoAgenda(): string
+    {
+        $currentYear = date('Y');
+        
+        // Hitung jumlah surat masuk di tahun ini
+        $count = self::whereYear('created_at', $currentYear)->count();
+        $nextNumber = $count + 1;
+        
+        // Format dengan padding 3 digit
+        return sprintf('%03d/%s', $nextNumber, $currentYear);
+    }
+
+    /**
      * Relasi ke user pembuat data.
      */
     public function creator(): BelongsTo

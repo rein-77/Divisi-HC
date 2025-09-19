@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use App\Models\SuratMasuk;
 
 class DemoDataSeeder extends Seeder
 {
@@ -77,24 +78,29 @@ class DemoDataSeeder extends Seeder
                 }
             }
 
-            // Seed 7 Surat Masuk
+            // Seed 7 Surat Masuk dengan no_agenda otomatis
             $today = now();
+            $tujuanOptions = [
+                'Bagian Kompensasi & Manfaat',
+                'Bagian Pendidikan & Pelatihan', 
+                'Bagian Penerimaan & Pengembangan Human Capital'
+            ];
+
             for ($i = 1; $i <= 7; $i++) {
                 $nomor = sprintf('SM-2025-%03d', $i);
                 $tanggalSurat = $today->copy()->subDays(14 - $i);
                 $tanggalDiterima = $tanggalSurat->copy()->addDays(rand(0, 3));
 
-                DB::table('surat_masuk')->insert([
+                SuratMasuk::create([
                     'surat_masuk_nomor' => $nomor,
                     'surat_masuk_tanggal' => $tanggalSurat->toDateString(),
                     'tanggal_diterima' => $tanggalDiterima->toDateString(),
                     'pengirim' => 'PT Contoh ' . chr(64 + $i),
-                    'tujuan' => 'Divisi HC',
-                    'perihal' => 'Permohonan informasi nomor ' . $i,
+                    'tujuan' => $tujuanOptions[($i - 1) % 3], // Rotasi tujuan
+                    'perihal' => 'Permohonan informasi nomor ' . $i . ' terkait administrasi kepegawaian dan surat menyurat divisi HC.',
+                    'keterangan' => $i % 2 == 0 ? 'Keterangan untuk surat masuk nomor ' . $i : null, // Sebagian ada keterangan
                     'berkas' => null,
                     'user_id_created' => $pegawaiId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
             }
 

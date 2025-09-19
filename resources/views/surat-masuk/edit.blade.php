@@ -49,20 +49,37 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- Nomor Surat -->
-                        <div>
-                            <x-input-label for="surat_masuk_nomor" :value="__('Nomor Surat')" />
-                            <x-text-input 
-                                id="surat_masuk_nomor" 
-                                name="surat_masuk_nomor" 
-                                type="text" 
-                                class="mt-1 block w-full" 
-                                :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)" 
-                                required 
-                                autofocus 
-                                placeholder="Contoh: 001/SK/2024"
-                            />
-                            <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
+                        <!-- Nomor Surat dan No Agenda -->
+                        <div class="grid grid-cols-1 md:grid-cols-10 gap-6">
+                            <!-- Nomor Surat (70%) -->
+                            <div class="md:col-span-7">
+                                <x-input-label for="surat_masuk_nomor" :value="__('Nomor Surat')" />
+                                <x-text-input 
+                                    id="surat_masuk_nomor" 
+                                    name="surat_masuk_nomor" 
+                                    type="text" 
+                                    class="mt-1 block w-full" 
+                                    :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)" 
+                                    required 
+                                    autofocus 
+                                    placeholder="Contoh: 001/SK/2024"
+                                />
+                                <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
+                            </div>
+
+                            <!-- No Agenda (30%) -->
+                            <div class="md:col-span-3">
+                                <x-input-label for="no_agenda" value="No Agenda" />
+                                <x-text-input 
+                                    id="no_agenda" 
+                                    name="no_agenda" 
+                                    type="text" 
+                                    class="mt-1 block w-full bg-gray-100" 
+                                    value="{{ $suratMasuk->no_agenda }}"
+                                    readonly 
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Tidak dapat diubah</p>
+                            </div>
                         </div>
 
                         <!-- Row untuk 2 kolom -->
@@ -189,7 +206,7 @@
                             </p>
                             <x-input-error class="mt-2" :messages="$errors->get('berkas')" />
                         </div>
-                        
+
                         <!-- Keterangan -->
                         <div>
                             <x-input-label for="keterangan" :value="__('Keterangan (Opsional)')" />
