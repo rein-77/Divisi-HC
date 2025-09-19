@@ -199,6 +199,18 @@
                         </div>
                     @endif
 
+                    <!-- Keterangan -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Keterangan</h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            @if($suratMasuk->keterangan)
+                                <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ $suratMasuk->keterangan }}</p>
+                            @else
+                                <p class="text-sm text-gray-500">-</p>
+                            @endif
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="mt-8 pt-6 border-t border-gray-200">
                         <div class="flex items-center justify-between">

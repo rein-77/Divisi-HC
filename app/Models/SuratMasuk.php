@@ -33,6 +33,7 @@ class SuratMasuk extends Model
         'pengirim',
         'tujuan',
         'perihal',
+        'keterangan',
         'berkas',
         'user_id_created',
     ];

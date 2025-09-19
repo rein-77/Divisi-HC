@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('pengirim');
             $table->string('tujuan');
             $table->text('perihal'); // Gunakan text untuk isi yang lebih panjang
+            $table->text('keterangan')->nullable();
             $table->string('berkas')->nullable();
 
             // FK ke user yang membuat surat

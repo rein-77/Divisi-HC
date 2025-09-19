@@ -138,6 +138,19 @@
                             <x-input-error class="mt-2" :messages="$errors->get('berkas')" />
                         </div>
 
+                         <!-- Keterangan -->
+                        <div>
+                            <x-input-label for="keterangan" :value="__('Keterangan (Opsional)')" />
+                            <textarea 
+                                id="keterangan" 
+                                name="keterangan" 
+                                rows="4"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                placeholder="Isi keterangan surat..."
+                            >{{ old('keterangan') }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('keterangan')" />
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
                             <a href="{{ route('surat-masuk.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
