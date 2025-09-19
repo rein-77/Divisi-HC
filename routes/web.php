@@ -19,8 +19,6 @@ Route::middleware('auth')->group(function () {
     
     // Surat Masuk Routes
     Route::resource('surat-masuk', SuratMasukController::class);
-    Route::get('surat-masuk-preview-nomor', [SuratMasukController::class, 'previewNomor'])
-        ->name('surat-masuk.preview-nomor');
 });
 
 require __DIR__.'/auth.php';

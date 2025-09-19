@@ -56,16 +56,12 @@
                                 id="surat_masuk_nomor" 
                                 name="surat_masuk_nomor" 
                                 type="text" 
-                                class="mt-1 block w-full bg-gray-100" 
+                                class="mt-1 block w-full" 
                                 :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)" 
-                                readonly
+                                required 
+                                autofocus 
+                                placeholder="Contoh: 001/SK/2024"
                             />
-                            <p class="mt-1 text-sm text-gray-500">
-                                <svg class="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Nomor urut akan dipertahankan, tetapi kode tujuan (SM-KM/SM-PP/SM-PPH) akan berubah sesuai tujuan yang dipilih
-                            </p>
                             <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
                         </div>
 
@@ -169,9 +165,7 @@
                                             <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                             </svg>
-                                            <span class="text-sm text-gray-600">
-                                                Berkas: {{ $suratMasuk->surat_masuk_nomor }}.{{ pathinfo($suratMasuk->berkas, PATHINFO_EXTENSION) }}
-                                            </span>
+                                            <span class="text-sm text-gray-600">Berkas saat ini: {{ basename($suratMasuk->berkas) }}</span>
                                         </div>
                                         <a href="{{ \Illuminate\Support\Facades\Storage::url($suratMasuk->berkas) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 text-sm">
                                             Lihat
@@ -213,43 +207,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tujuanSelect = document.getElementById('tujuan');
-            const nomorInput = document.getElementById('surat_masuk_nomor');
-            const originalNomor = nomorInput.value;
-            
-            // Mapping tujuan ke kode
-            const codes = {
-                'Bagian Kompensasi & Manfaat': 'SM-KM',
-                'Bagian Pendidikan & Pelatihan': 'SM-PP',
-                'Bagian Penerimaan & Pengembangan Human Capital': 'SM-PPH'
-            };
-            
-            function updateNomorPreview() {
-                const selectedTujuan = tujuanSelect.value;
-                
-                if (selectedTujuan && codes[selectedTujuan]) {
-                    // Ekstrak nomor urut dan tahun dari nomor asli
-                    const parts = originalNomor.split('/');
-                    if (parts.length >= 3) {
-                        const nomorUrut = parts[0]; // 001
-                        const tahun = parts[2];     // 2025
-                        const newCode = codes[selectedTujuan];
-                        
-                        // Update preview nomor
-                        const newNomor = `${nomorUrut}/${newCode}/${tahun}`;
-                        nomorInput.value = newNomor;
-                    }
-                } else {
-                    // Kembalikan ke nomor asli jika tidak ada tujuan dipilih
-                    nomorInput.value = originalNomor;
-                }
-            }
-            
-            // Update preview ketika tujuan berubah
-            tujuanSelect.addEventListener('change', updateNomorPreview);
-        });
-    </script>
 </x-app-layout>

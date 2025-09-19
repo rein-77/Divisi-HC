@@ -15,9 +15,6 @@ class DemoDataSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            // Clear existing demo data first
-            DB::table('surat_masuk')->where('pengirim', 'like', 'PT Contoh%')->orWhere('pengirim', 'like', 'PT Masa Depan%')->delete();
-            DB::table('surat_keluar')->where('keterangan', 'like', 'Contoh data surat keluar%')->delete();
             // Resolve table name for users based on migration (tabel 'user')
             $userTable = Schema::hasTable('user') ? 'user' : 'users';
 
@@ -82,50 +79,18 @@ class DemoDataSeeder extends Seeder
 
             // Seed 7 Surat Masuk
             $today = now();
-            $destinations = ['SM-PPH', 'SM-PP', 'SM-KM'];
-            $tujuanOptions = [
-                'Bagian Kompensasi & Manfaat',
-                'Bagian Pendidikan & Pelatihan',
-                'Bagian Penerimaan & Pengembangan Human Capital'
-            ];
-            
-            // Data tahun 2025 (nomor 1-5)
-            for ($i = 1; $i <= 5; $i++) {
-                $destinationCode = $destinations[($i - 1) % count($destinations)];
-                $nomor = sprintf('%03d/%s/2025', $i, $destinationCode);
-                $tanggalSurat = $today->copy()->subDays(20 - $i);
+            for ($i = 1; $i <= 7; $i++) {
+                $nomor = sprintf('SM-2025-%03d', $i);
+                $tanggalSurat = $today->copy()->subDays(14 - $i);
                 $tanggalDiterima = $tanggalSurat->copy()->addDays(rand(0, 3));
-                $tujuan = $tujuanOptions[($i - 1) % count($tujuanOptions)];
 
                 DB::table('surat_masuk')->insert([
                     'surat_masuk_nomor' => $nomor,
                     'surat_masuk_tanggal' => $tanggalSurat->toDateString(),
                     'tanggal_diterima' => $tanggalDiterima->toDateString(),
                     'pengirim' => 'PT Contoh ' . chr(64 + $i),
-                    'tujuan' => $tujuan,
-                    'perihal' => 'Permohonan informasi nomor ' . $i . ' tahun 2025',
-                    'berkas' => null,
-                    'user_id_created' => $pegawaiId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-            
-            // Data tahun 2026 (nomor 1-2) - harus muncul di atas meskipun nomor lebih kecil
-            for ($i = 1; $i <= 2; $i++) {
-                $destinationCode = $destinations[($i - 1) % count($destinations)];
-                $nomor = sprintf('%03d/%s/2026', $i, $destinationCode);
-                $tanggalSurat = $today->copy()->addDays($i);
-                $tanggalDiterima = $tanggalSurat->copy()->addDays(rand(0, 3));
-                $tujuan = $tujuanOptions[($i + 4) % count($tujuanOptions)]; // +4 untuk variasi
-
-                DB::table('surat_masuk')->insert([
-                    'surat_masuk_nomor' => $nomor,
-                    'surat_masuk_tanggal' => $tanggalSurat->toDateString(),
-                    'tanggal_diterima' => $tanggalDiterima->toDateString(),
-                    'pengirim' => 'PT Masa Depan ' . chr(64 + $i),
-                    'tujuan' => $tujuan,
-                    'perihal' => 'Permohonan informasi nomor ' . $i . ' tahun 2026',
+                    'tujuan' => 'Divisi HC',
+                    'perihal' => 'Permohonan informasi nomor ' . $i,
                     'berkas' => null,
                     'user_id_created' => $pegawaiId,
                     'created_at' => now(),
