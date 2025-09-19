@@ -42,15 +42,15 @@
                                     {{ $suratMasuk->surat_masuk_nomor }}
                                 </h1>
                                 <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    {{-- <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
                                             <circle cx="4" cy="4" r="3"/>
                                         </svg>
                                         Aktif
-                                    </span>
-                                    <span>Dibuat: {{ $suratMasuk->created_at->format('d/m/Y H:i') }}</span>
+                                    </span> --}}
+                                    <span>Dibuat: {{ $suratMasuk->created_at->format('d F Y, H:i') }} WITA</span>
                                     @if($suratMasuk->updated_at != $suratMasuk->created_at)
-                                        <span>Diperbarui: {{ $suratMasuk->updated_at->format('d/m/Y H:i') }}</span>
+                                        {{-- <span>Diperbarui: {{ $suratMasuk->updated_at->format('d/m/Y H:i') }}</span> --}}
                                     @endif
                                 </div>
                             </div>
@@ -203,7 +203,7 @@
                     <div class="mt-8 pt-6 border-t border-gray-200">
                         <div class="flex items-center justify-between">
                             <div class="text-sm text-gray-500">
-                                <p>Terakhir diperbarui: {{ $suratMasuk->updated_at->format('d F Y, H:i') }} WIB</p>
+                                <p>Terakhir diperbarui: {{ $suratMasuk->updated_at->format('d F Y, H:i') }} WITA</p>
                             </div>
                             <div class="flex space-x-3">
                                 <a href="{{ route('surat-masuk.edit', $suratMasuk->surat_masuk_id) }}" class="inline-flex items-center px-4 py-2 bg-yellow-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-500 focus:bg-yellow-500 active:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
