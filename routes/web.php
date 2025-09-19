@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuratMasukController;
+use App\Http\Controllers\SuratMasukDisposisiController;
+use App\Http\Controllers\SuratKeluarController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +21,11 @@ Route::middleware('auth')->group(function () {
     
     // Surat Masuk Routes
     Route::resource('surat-masuk', SuratMasukController::class);
+    
+    // Surat Masuk Disposisi Routes
+    Route::resource('surat-masuk-disposisi', SuratMasukDisposisiController::class);
+
+    Route::resource('surat-keluar', SuratKeluarController::class);
 });
 
 require __DIR__.'/auth.php';

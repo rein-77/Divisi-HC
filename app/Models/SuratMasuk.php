@@ -27,6 +27,7 @@ class SuratMasuk extends Model
      * @var string[]
      */
     protected $fillable = [
+        'no_agenda',
         'surat_masuk_nomor',
         'surat_masuk_tanggal',
         'tanggal_diterima',

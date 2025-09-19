@@ -28,6 +28,10 @@
                         {{ __('Surat Masuk') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('surat-masuk-disposisi.index')" :active="request()->routeIs('surat-masuk-disposisi.*')">
+                        {{ __('Surat Masuk Disposisi') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="$suratKeluarCreate" :active="request()->routeIs('surat-keluar.*') || request()->is('surat-keluar*')">
                         {{ __('Surat Keluar') }}
                     </x-nav-link>
@@ -90,8 +94,10 @@
             <x-responsive-nav-link :href="$suratMasukIndex" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
                 {{ __('Surat Masuk') }}
             </x-responsive-nav-link>
-            
-            
+
+            <x-responsive-nav-link :href="route('surat-masuk-disposisi.index')" :active="request()->routeIs('surat-masuk-disposisi.*')">
+                {{ __('Surat Masuk Disposisi') }}
+            </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="$suratKeluarCreate" :active="request()->routeIs('surat-keluar.*') || request()->is('surat-keluar*')">
                 {{ __('Surat Keluar') }}

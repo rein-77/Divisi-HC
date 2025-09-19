@@ -31,6 +31,41 @@ class DemoDataSeeder extends Seeder
                 ]);
             }
 
+            // Seed 3 bagian seksi spesifik untuk Divisi HC
+            $bagianSeksiData = [
+                [
+                    'bagian_seksi' => 'Bagian Kompensasi & Manfaat',
+                    'bagian_seksi_kode' => 'BGS-KOM',
+                    'unit_kerja_id' => $unitKerjaId,
+                ],
+                [
+                    'bagian_seksi' => 'Bagian Pendidikan & Pelatihan',
+                    'bagian_seksi_kode' => 'BGS-PEN',
+                    'unit_kerja_id' => $unitKerjaId,
+                ],
+                [
+                    'bagian_seksi' => 'Bagian Penerimaan & Pengembangan Human Capital',
+                    'bagian_seksi_kode' => 'BGS-PHC',
+                    'unit_kerja_id' => $unitKerjaId,
+                ],
+            ];
+
+            foreach ($bagianSeksiData as $bagianData) {
+                $existingBagian = DB::table('bagian_seksi')
+                    ->where('bagian_seksi', $bagianData['bagian_seksi'])
+                    ->first();
+
+                if (!$existingBagian) {
+                    DB::table('bagian_seksi')->insert([
+                        'bagian_seksi' => $bagianData['bagian_seksi'],
+                        'bagian_seksi_kode' => $bagianData['bagian_seksi_kode'],
+                        'unit_kerja_id' => $bagianData['unit_kerja_id'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
             $bagianSeksiId = DB::table('bagian_seksi')->value('bagian_seksi_id');
             if (! $bagianSeksiId) {
                 $bagianSeksiId = DB::table('bagian_seksi')->insertGetId([

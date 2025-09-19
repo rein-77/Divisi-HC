@@ -35,7 +35,7 @@
                                     name="search" 
                                     type="text" 
                                     value="{{ $search }}" 
-                                    placeholder="Cari berdasarkan nomor, pengirim, tujuan, atau perihal..."
+                                    placeholder="Cari berdasarkan no agenda, pengirim, tujuan, atau perihal..."
                                     class="w-full"
                                 />
                             </div>
@@ -72,11 +72,11 @@
                                         No
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Nomor Surat
+                                        No Agenda
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {{-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tanggal Surat
-                                    </th>
+                                    </th> --}}
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tanggal Diterima
                                     </th>
@@ -102,12 +102,12 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ $surat->surat_masuk_nomor }}
+                                                {{ $surat->no_agenda }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $surat->surat_masuk_tanggal ? $surat->surat_masuk_tanggal->format('d/m/Y') : '-' }}
-                                        </td>
+                                        </td> --}}
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $surat->tanggal_diterima ? $surat->tanggal_diterima->format('d/m/Y') : '-' }}
                                         </td>

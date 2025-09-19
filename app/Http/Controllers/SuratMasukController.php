@@ -19,15 +19,16 @@ class SuratMasukController extends Controller
         $search = $request->get('search');
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('surat_masuk_nomor', 'like', "%{$search}%")
+                $q->where('no_agenda', 'like', "%{$search}%")
+                    ->orWhere('surat_masuk_nomor', 'like', "%{$search}%")
                     ->orWhere('pengirim', 'like', "%{$search}%")
                     ->orWhere('tujuan', 'like', "%{$search}%")
                     ->orWhere('perihal', 'like', "%{$search}%");
             });
         }
 
-        // Urutan default terbaru berdasarkan tanggal diterima
-        $suratMasuk = $query->orderByDesc('tanggal_diterima')
+        // Urutan default terbaru berdasarkan no agenda
+        $suratMasuk = $query->orderByDesc('no_agenda')
             ->paginate(10)
             ->withQueryString();
 
@@ -51,6 +52,7 @@ class SuratMasukController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'no_agenda' => 'required|string|max:255|unique:surat_masuk,no_agenda',
             'surat_masuk_nomor' => 'required|string|max:255|unique:surat_masuk,surat_masuk_nomor',
             'surat_masuk_tanggal' => 'required|date',
             'tanggal_diterima' => 'required|date',

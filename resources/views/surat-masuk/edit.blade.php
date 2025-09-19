@@ -173,7 +173,7 @@
 
                         <!-- File Upload -->
                         <div>
-                            <x-input-label for="berkas" :value="__('Berkas')" />
+                            <x-input-label for="berkas" :value="__('Berkas (Opsional)')" />
                             
                             @if($suratMasuk->berkas)
                                 <div class="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
