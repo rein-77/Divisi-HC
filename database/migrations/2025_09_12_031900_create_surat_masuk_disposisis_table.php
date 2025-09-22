@@ -20,7 +20,9 @@ return new class extends Migration {
             // FK ke bagian_seksi (tujuan disposisi)
             $table->foreignId('bagian_seksi_id')->constrained('bagian_seksi', 'bagian_seksi_id');
 
+            $table->text('keterangan')->nullable();
             $table->dateTime('waktu_disposisi');
+            $table->softDeletes(); // Menambahkan kolom deleted_at untuk soft deletes
             $table->timestamps();
         });
     }

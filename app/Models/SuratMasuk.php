@@ -85,4 +85,12 @@ class SuratMasuk extends Model
     {
         return $this->belongsTo(User::class, 'user_id_created', 'user_id');
     }
+
+    /**
+     * Relasi ke disposisi surat masuk.
+     */
+    public function disposisi()
+    {
+        return $this->hasMany(SuratMasukDisposisi::class, 'surat_masuk_id', 'surat_masuk_id');
+    }
 }
