@@ -1,0 +1,69 @@
+/* Surat Keluar Form Styles */
+
+/* Search Dropdown Styles */
+.surat-keluar-dropdown {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.surat-keluar-dropdown .dropdown-option:hover {
+    background-color: #eef2ff;
+}
+
+.surat-keluar-search:disabled {
+    background-color: #f9fafb;
+    color: #6b7280;
+}
+
+/* Clear button styles */
+.surat-keluar-clear-btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.surat-keluar-clear-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Loading state for dropdown */
+.surat-keluar-dropdown.loading::before {
+    content: '';
+    display: block;
+    padding: 12px;
+    text-align: center;
+    background: #f3f4f6;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.surat-keluar-dropdown.loading::before {
+    content: 'Memuat...';
+}
+
+/* Animation for dropdown */
+.surat-keluar-dropdown {
+    animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Focus styles */
+.surat-keluar-search:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    outline: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .surat-keluar-dropdown {
+        max-height: 200px;
+    }
+}

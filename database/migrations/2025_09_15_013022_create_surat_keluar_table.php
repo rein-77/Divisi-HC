@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->text('keterangan')->nullable();
 
             // Foreign Keys
-            $table->foreignId('unit_kerja_tujuan')->constrained('unit_kerja', 'unit_kerja_id');
-            $table->foreignId('bagian_seksi_tujuan')->constrained('bagian_seksi', 'bagian_seksi_id');
+            $table->foreignId('unit_kerja_tujuan')->nullable()->constrained('unit_kerja', 'unit_kerja_id');
+            $table->foreignId('bagian_seksi_tujuan')->nullable()->constrained('bagian_seksi', 'bagian_seksi_id');
             $table->foreignId('bagian_seksi_pembuat')->constrained('bagian_seksi', 'bagian_seksi_id');
             $table->foreignId('user_id_created')->constrained('user', 'user_id');
 
@@ -34,6 +34,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('surat_keluars');
+        Schema::dropIfExists('surat_keluar');
     }
 };

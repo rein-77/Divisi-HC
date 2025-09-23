@@ -220,7 +220,7 @@ class DemoDataSeeder extends Seeder
 
             // Seed 7 Surat Keluar
             for ($i = 1; $i <= 7; $i++) {
-                $nomor = sprintf('SK-2025-%03d', $i);
+                $nomor = sprintf('%03d/%s', $i, date('Y'));
                 $tanggalSurat = $today->copy()->subDays(7 - $i);
 
                 DB::table('surat_keluar')->insert([
