@@ -69,14 +69,35 @@
                                                         </svg>
                                                         Disposisi
                                                     </a>
-                                                    <a href="{{ route('surat-masuk.show', $surat->surat_masuk_id) }}" 
-                                                       class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                    <button type="button" 
+                                                            x-data
+                                                            @click="$dispatch('open-surat-modal', { 
+                                                                name: 'surat-detail', 
+                                                                surat: {
+                                                                    no_agenda: '{{ $surat->no_agenda }}',
+                                                                    surat_masuk_nomor: '{{ $surat->surat_masuk_nomor }}',
+                                                                    surat_masuk_tanggal: '{{ $surat->surat_masuk_tanggal?->format('d/m/Y') }}',
+                                                                    tanggal_diterima: '{{ $surat->tanggal_diterima?->format('d/m/Y') }}',
+                                                                    pengirim: '{{ $surat->pengirim }}',
+                                                                    tujuan: '{{ $surat->tujuan }}',
+                                                                    perihal: '{{ $surat->perihal }}',
+                                                                    keterangan: '{{ $surat->keterangan }}',
+                                                                    berkas: '{{ $surat->berkas }}',
+                                                                    berkas_name: '{{ $surat->berkas ? basename($surat->berkas) : '' }}',
+                                                                    berkas_url: '{{ $surat->berkas ? \Illuminate\Support\Facades\Storage::url($surat->berkas) : '' }}',
+                                                                    creator: {
+                                                                        nama: '{{ $surat->creator?->nama ?? 'Unknown' }}'
+                                                                    },
+                                                                    created_at: '{{ $surat->created_at?->translatedFormat('d F Y H:i') }}'
+                                                                }
+                                                            })"
+                                                            class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                         <svg class="-ml-1 mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                         </svg>
                                                         Detail
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -99,18 +120,58 @@
             <!-- Riwayat Disposisi -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-3 sm:space-y-0">
                         <h3 class="text-lg font-medium text-gray-900">Riwayat Disposisi</h3>
-                        <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex items-center space-x-2">
-                            <label for="tanggal" class="text-sm text-gray-600">Tanggal:</label>
-                            <input type="date" 
-                                   id="tanggal" 
-                                   name="tanggal" 
-                                   value="{{ $tanggal }}" 
-                                   class="border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                   onchange="this.form.submit()">
-                        </form>
+                        
+                        <!-- Search and Date Filter -->
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                            <!-- Global Search -->
+                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex items-center space-x-2">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                    </div>
+                                    <input type="text" 
+                                           name="search" 
+                                           value="{{ request('search') }}" 
+                                           placeholder="Cari riwayat disposisi..." 
+                                           class="pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:border-indigo-500 focus:ring-indigo-500 w-64">
+                                </div>
+                                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+                                <button type="submit" class="inline-flex items-center px-3 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    Cari
+                                </button>
+                                @if(request('search'))
+                                    <a href="{{ route('surat-masuk-disposisi.index', ['tanggal' => $tanggal]) }}" class="inline-flex items-center px-3 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        Reset
+                                    </a>
+                                @endif
+                            </form>
+                            
+                            <!-- Date Filter -->
+                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex items-center space-x-2">
+                                <label for="tanggal" class="text-sm text-gray-600 whitespace-nowrap">Tanggal:</label>
+                                <input type="date" 
+                                       id="tanggal" 
+                                       name="tanggal" 
+                                       value="{{ $tanggal }}" 
+                                       class="border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                       onchange="this.form.submit()">
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            </form>
+                        </div>
                     </div>
+
+                    <!-- Search Results Info -->
+                    @if(request('search'))
+                        <div class="mb-4 text-sm text-gray-600">
+                            Menampilkan hasil pencarian global untuk: <strong>"{{ request('search') }}"</strong>
+                            <span class="ml-1 text-gray-500">(tanpa filter tanggal)</span>
+                            <span class="ml-1">— {{ $riwayatDisposisi->count() }} hasil ditemukan</span>
+                        </div>
+                    @endif
 
                     @if($riwayatDisposisi->count() > 0)
                         <div class="space-y-4">
@@ -181,18 +242,20 @@
                                                     </svg>
                                                     Edit
                                                 </a>
-                                                <form method="POST" action="{{ route('surat-masuk-disposisi.destroy', $disposisi->surat_masuk_disposisi_id) }}" 
-                                                      class="inline-block" 
-                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus disposisi ini?')">
+                                                <button type="button"
+                                                        x-data
+                                                        @click="$dispatch('open-modal', '{{ 'confirm-delete-disposisi-' . $disposisi->surat_masuk_disposisi_id }}')"
+                                                        class="inline-flex items-center px-2 py-1 border border-red-300 text-xs leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                    <svg class="-ml-0.5 mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                                
+                                                <!-- Hidden Delete Form -->
+                                                <form id="delete-disposisi-form-{{ $disposisi->surat_masuk_disposisi_id }}" method="POST" action="{{ route('surat-masuk-disposisi.destroy', $disposisi->surat_masuk_disposisi_id) }}" class="hidden">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" 
-                                                            class="inline-flex items-center px-2 py-1 border border-red-300 text-xs leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                        <svg class="-ml-0.5 mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                        </svg>
-                                                        Hapus
-                                                    </button>
                                                 </form>
                                             </div>
                                         </div>
@@ -215,4 +278,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Surat Detail Modal -->
+    <x-surat-detail-modal name="surat-detail" />
+
+    <!-- Confirm Modal Components for each delete action -->
+    @foreach ($riwayatDisposisi as $disposisi)
+        <x-confirm-modal
+            name="{{ 'confirm-delete-disposisi-' . $disposisi->surat_masuk_disposisi_id }}"
+            title="Konfirmasi Hapus"
+            :message="'Apakah Anda yakin ingin menghapus disposisi untuk surat No Agenda ' . $disposisi->suratMasuk->no_agenda . '? Tindakan ini tidak dapat dibatalkan.'"
+            confirmText="Hapus"
+            cancelText="Batal"
+            form="{{ 'delete-disposisi-form-' . $disposisi->surat_masuk_disposisi_id }}"
+            variant="danger"
+        />
+    @endforeach
 </x-app-layout>

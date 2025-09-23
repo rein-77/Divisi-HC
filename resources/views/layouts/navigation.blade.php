@@ -24,12 +24,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="$suratMasukIndex" :active="request()->routeIs('surat-masuk.*') || request()->is('surat-masuk*')">
+                    <x-nav-link :href="$suratMasukIndex" :active="request()->routeIs('surat-masuk.*')">
                         {{ __('Surat Masuk') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('surat-masuk-disposisi.index')" :active="request()->routeIs('surat-masuk-disposisi.*')">
-                        {{ __('Surat Masuk Disposisi') }}
+                        {{ __('Disposisi Surat Masuk') }}
                     </x-nav-link>
 
                     <x-nav-link :href="$suratKeluarCreate" :active="request()->routeIs('surat-keluar.*') || request()->is('surat-keluar*')">

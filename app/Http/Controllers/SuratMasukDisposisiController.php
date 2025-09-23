@@ -18,6 +18,7 @@ class SuratMasukDisposisiController extends Controller
     {
         // Get tanggal filter (default hari ini)
         $tanggal = $request->get('tanggal', now()->format('Y-m-d'));
+        $search = $request->get('search');
         
         // Surat masuk yang belum didisposisi
         $suratBelumDisposisi = SuratMasuk::with('creator')
@@ -26,11 +27,36 @@ class SuratMasukDisposisiController extends Controller
             ->limit(10)
             ->get();
 
-        // Riwayat disposisi berdasarkan tanggal
-        $riwayatDisposisi = SuratMasukDisposisi::with(['suratMasuk', 'user', 'bagianSeksi', 'disposisiOleh', 'bagianSeksiMultiple'])
-            ->whereDate('waktu_disposisi', $tanggal)
-            ->orderByDesc('waktu_disposisi')
-            ->get();
+        // Riwayat disposisi berdasarkan tanggal dan search
+        $riwayatQuery = SuratMasukDisposisi::with(['suratMasuk.creator', 'user', 'bagianSeksi', 'disposisiOleh', 'bagianSeksiMultiple']);
+        
+        // Apply search filter if provided
+        if ($search) {
+            $riwayatQuery->where(function($query) use ($search) {
+                $query->whereHas('suratMasuk', function($q) use ($search) {
+                    $q->where('no_agenda', 'like', "%{$search}%")
+                      ->orWhere('surat_masuk_nomor', 'like', "%{$search}%")
+                      ->orWhere('pengirim', 'like', "%{$search}%")
+                      ->orWhere('perihal', 'like', "%{$search}%")
+                      ->orWhere('tujuan', 'like', "%{$search}%");
+                })
+                ->orWhere('keterangan', 'like', "%{$search}%")
+                ->orWhereHas('disposisiOleh', function($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%");
+                })
+                ->orWhereHas('bagianSeksiMultiple', function($q) use ($search) {
+                    $q->where('bagian_seksi', 'like', "%{$search}%");
+                })
+                ->orWhereHas('bagianSeksi', function($q) use ($search) {
+                    $q->where('bagian_seksi', 'like', "%{$search}%");
+                });
+            });
+        } else {
+            // Only apply date filter if no search is provided
+            $riwayatQuery->whereDate('waktu_disposisi', $tanggal);
+        }
+        
+        $riwayatDisposisi = $riwayatQuery->orderByDesc('waktu_disposisi')->get();
 
         return view('surat-masuk-disposisi.index', [
             'suratBelumDisposisi' => $suratBelumDisposisi,
@@ -51,7 +77,10 @@ class SuratMasukDisposisiController extends Controller
             $suratMasuk = SuratMasuk::findOrFail($suratMasukId);
         }
 
-        $bagianSeksi = BagianSeksi::all();
+        // Only show sections from Human Capital division
+        $bagianSeksi = BagianSeksi::whereHas('unitKerja', function ($query) {
+            $query->where('unit_kerja', 'Divisi Human Capital');
+        })->get();
 
         return view('surat-masuk-disposisi.create', [
             'suratMasuk' => $suratMasuk,
@@ -102,7 +131,11 @@ class SuratMasukDisposisiController extends Controller
     public function edit(string $id)
     {
         $disposisi = SuratMasukDisposisi::with(['suratMasuk', 'user', 'bagianSeksi', 'bagianSeksiMultiple'])->findOrFail($id);
-        $bagianSeksi = BagianSeksi::all();
+        
+        // Only show sections from Human Capital division
+        $bagianSeksi = BagianSeksi::whereHas('unitKerja', function ($query) {
+            $query->where('unit_kerja', 'Divisi Human Capital');
+        })->get();
 
         return view('surat-masuk-disposisi.edit', [
             'disposisi' => $disposisi,

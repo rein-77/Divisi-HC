@@ -105,23 +105,15 @@
                             <!-- Tujuan -->
                             <div>
                                 <x-input-label for="tujuan" :value="__('Tujuan')" />
-                                <select 
-                                    id="tujuan" 
-                                    name="tujuan" 
-                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                <x-text-input
+                                    id="tujuan"
+                                    name="tujuan"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    :value="old('tujuan')"
                                     required
-                                >
-                                    <option value="">Pilih Tujuan</option>
-                                    <option value="Bagian Kompensasi & Manfaat" {{ old('tujuan') == 'Bagian Kompensasi & Manfaat' ? 'selected' : '' }}>
-                                        Bagian Kompensasi & Manfaat
-                                    </option>
-                                    <option value="Bagian Pendidikan & Pelatihan" {{ old('tujuan') == 'Bagian Pendidikan & Pelatihan' ? 'selected' : '' }}>
-                                        Bagian Pendidikan & Pelatihan
-                                    </option>
-                                    <option value="Bagian Penerimaan & Pengembangan Human Capital" {{ old('tujuan') == 'Bagian Penerimaan & Pengembangan Human Capital' ? 'selected' : '' }}>
-                                        Bagian Penerimaan & Pengembangan Human Capital
-                                    </option>
-                                </select>
+                                    placeholder="Contoh : Divisi Human Capital"
+                                />
                                 <x-input-error class="mt-2" :messages="$errors->get('tujuan')" />
                             </div>
                         </div>

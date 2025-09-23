@@ -19,62 +19,141 @@ class DemoDataSeeder extends Seeder
             // Resolve table name for users based on migration (tabel 'user')
             $userTable = Schema::hasTable('user') ? 'user' : 'users';
 
-            // Ensure base references exist (created by AdminSeeder)
-            $unitKerjaId = DB::table('unit_kerja')->value('unit_kerja_id');
-            if (! $unitKerjaId) {
-                $unitKerjaId = DB::table('unit_kerja')->insertGetId([
-                    'unit_kerja' => 'Unit Kerja Pusat',
-                    'unit_kerja_kode' => 'UK-001',
-                    'kota_kabupaten' => 'Jakarta',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-
-            // Seed 3 bagian seksi spesifik untuk Divisi HC
-            $bagianSeksiData = [
+            // Define units and their sections
+            $unitsData = [
                 [
-                    'bagian_seksi' => 'Bagian Kompensasi & Manfaat',
-                    'bagian_seksi_kode' => 'BGS-KOM',
-                    'unit_kerja_id' => $unitKerjaId,
+                    'unit_kerja' => 'Divisi Human Capital',
+                    'unit_kerja_kode' => 'DHC-01',
+                    'kota_kabupaten' => 'Banjarmasin',
+                    'bagian_seksi' => [
+                        [
+                            'bagian_seksi' => 'Bagian Kompensasi & Manfaat',
+                            'bagian_seksi_kode' => 'B-KM',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Pendidikan & Pelatihan',
+                            'bagian_seksi_kode' => 'B-PPL',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Penerimaan & Pengembangan Human Capital',
+                            'bagian_seksi_kode' => 'B-PPH',
+                        ],
+                    ]
                 ],
                 [
-                    'bagian_seksi' => 'Bagian Pendidikan & Pelatihan',
-                    'bagian_seksi_kode' => 'BGS-PEN',
-                    'unit_kerja_id' => $unitKerjaId,
+                    'unit_kerja' => 'Divisi Unit Usaha Syariah',
+                    'unit_kerja_kode' => 'DUUS-02',
+                    'kota_kabupaten' => 'Banjarmasin',
+                    'bagian_seksi' => [
+                        [
+                            'bagian_seksi' => 'Bagian Pengembangan Produk Syariah',
+                            'bagian_seksi_kode' => 'B-PPS',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Risiko & Kepatuhan Syariah',
+                            'bagian_seksi_kode' => 'B-RKS',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Marketing & Komunikasi Syariah',
+                            'bagian_seksi_kode' => 'B-MKS',
+                        ],
+                    ]
                 ],
                 [
-                    'bagian_seksi' => 'Bagian Penerimaan & Pengembangan Human Capital',
-                    'bagian_seksi_kode' => 'BGS-PHC',
-                    'unit_kerja_id' => $unitKerjaId,
+                    'unit_kerja' => 'Divisi Teknologi Sistem Informasi',
+                    'unit_kerja_kode' => 'DTSI-03',
+                    'kota_kabupaten' => 'Banjarmasin',
+                    'bagian_seksi' => [
+                        [
+                            'bagian_seksi' => 'Bagian Pengembangan Sistem',
+                            'bagian_seksi_kode' => 'B-PS',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Infrastruktur & Jaringan',
+                            'bagian_seksi_kode' => 'B-IJ',
+                        ],
+                        [
+                            'bagian_seksi' => 'Bagian Keamanan Informasi',
+                            'bagian_seksi_kode' => 'B-KI',
+                        ],
+                    ]
                 ],
             ];
 
-            foreach ($bagianSeksiData as $bagianData) {
-                $existingBagian = DB::table('bagian_seksi')
-                    ->where('bagian_seksi', $bagianData['bagian_seksi'])
+            $firstUnitId = null;
+            $firstBagianSeksiId = null;
+
+            // Seed units and their sections
+            foreach ($unitsData as $unitData) {
+                $existingUnit = DB::table('unit_kerja')
+                    ->where('unit_kerja', $unitData['unit_kerja'])
                     ->first();
 
-                if (!$existingBagian) {
-                    DB::table('bagian_seksi')->insert([
-                        'bagian_seksi' => $bagianData['bagian_seksi'],
-                        'bagian_seksi_kode' => $bagianData['bagian_seksi_kode'],
-                        'unit_kerja_id' => $bagianData['unit_kerja_id'],
+                if (!$existingUnit) {
+                    $unitId = DB::table('unit_kerja')->insertGetId([
+                        'unit_kerja' => $unitData['unit_kerja'],
+                        'unit_kerja_kode' => $unitData['unit_kerja_kode'],
+                        'kota_kabupaten' => $unitData['kota_kabupaten'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } else {
+                    $unitId = $existingUnit->unit_kerja_id;
+                }
+
+                // Store first unit ID for later use
+                if (!$firstUnitId) {
+                    $firstUnitId = $unitId;
+                }
+
+                // Seed bagian seksi for this unit
+                foreach ($unitData['bagian_seksi'] as $bagianData) {
+                    $existingBagian = DB::table('bagian_seksi')
+                        ->where('bagian_seksi', $bagianData['bagian_seksi'])
+                        ->first();
+
+                    if (!$existingBagian) {
+                        $bagianId = DB::table('bagian_seksi')->insertGetId([
+                            'bagian_seksi' => $bagianData['bagian_seksi'],
+                            'bagian_seksi_kode' => $bagianData['bagian_seksi_kode'],
+                            'unit_kerja_id' => $unitId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+
+                        // Store first bagian seksi ID for later use
+                        if (!$firstBagianSeksiId) {
+                            $firstBagianSeksiId = $bagianId;
+                        }
+                    }
+                }
+            }
+
+            // Fallback if no units/sections were created
+            if (!$firstUnitId) {
+                $firstUnitId = DB::table('unit_kerja')->value('unit_kerja_id');
+                if (!$firstUnitId) {
+                    $firstUnitId = DB::table('unit_kerja')->insertGetId([
+                        'unit_kerja' => 'Divisi Human Capital',
+                        'unit_kerja_kode' => 'DHC-01',
+                        'kota_kabupaten' => 'Banjarmasin',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
                 }
             }
 
-            $bagianSeksiId = DB::table('bagian_seksi')->value('bagian_seksi_id');
-            if (! $bagianSeksiId) {
-                $bagianSeksiId = DB::table('bagian_seksi')->insertGetId([
-                    'bagian_seksi' => 'Administrasi',
-                    'bagian_seksi_kode' => 'BGS-ADM',
-                    'unit_kerja_id' => $unitKerjaId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            if (!$firstBagianSeksiId) {
+                $firstBagianSeksiId = DB::table('bagian_seksi')->value('bagian_seksi_id');
+                if (!$firstBagianSeksiId) {
+                    $firstBagianSeksiId = DB::table('bagian_seksi')->insertGetId([
+                        'bagian_seksi' => 'Administrasi',
+                        'bagian_seksi_kode' => 'BGS-ADM',
+                        'unit_kerja_id' => $firstUnitId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
 
             $jabatanId = DB::table('jabatan')->value('jabatan_id');
@@ -98,7 +177,7 @@ class DemoDataSeeder extends Seeder
                     'tempat_lahir' => 'Bandung',
                     'tanggal_lahir' => '1995-05-15',
                     'jabatan_id' => $jabatanId,
-                    'bagian_seksi_id' => $bagianSeksiId,
+                    'bagian_seksi_id' => $firstBagianSeksiId,
                     'username' => $username,
                     'password' => Hash::make('password'), // login: pegawai / password
                     'remember_token' => null,
@@ -151,9 +230,9 @@ class DemoDataSeeder extends Seeder
                     'perihal' => 'Tindak lanjut permohonan ' . $i,
                     'berkas' => null,
                     'keterangan' => 'Contoh data surat keluar ' . $i,
-                    'unit_kerja_tujuan' => $unitKerjaId,
-                    'bagian_seksi_tujuan' => $bagianSeksiId,
-                    'bagian_seksi_pembuat' => $bagianSeksiId,
+                    'unit_kerja_tujuan' => $firstUnitId,
+                    'bagian_seksi_tujuan' => $firstBagianSeksiId,
+                    'bagian_seksi_pembuat' => $firstBagianSeksiId,
                     'user_id_created' => $pegawaiId,
                     'created_at' => now(),
                     'updated_at' => now(),

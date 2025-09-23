@@ -57,7 +57,7 @@ class SuratMasukController extends Controller
             'surat_masuk_tanggal' => 'required|date',
             'tanggal_diterima' => 'required|date',
             'pengirim' => 'required|string|max:255',
-            'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
+            'tujuan' => 'required|string',
             'perihal' => 'required|string',
             'keterangan' => 'nullable|string',
             'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
@@ -109,7 +109,7 @@ class SuratMasukController extends Controller
             'surat_masuk_tanggal' => 'required|date',
             'tanggal_diterima' => 'required|date',
             'pengirim' => 'required|string|max:255',
-            'tujuan' => 'required|in:Bagian Kompensasi & Manfaat,Bagian Pendidikan & Pelatihan,Bagian Penerimaan & Pengembangan Human Capital',
+            'tujuan' => 'required|string',
             'perihal' => 'required|string',
             'keterangan' => 'nullable|string',
             'berkas' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // 10MB max
