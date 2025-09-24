@@ -24,6 +24,15 @@
                 </x-alert>
             @endif
 
+            <!-- Alert Error -->
+            @if(session('error'))
+                <x-alert type="error" class="mb-6">
+                    <p class="text-sm font-medium">
+                        {{ session('error') }}
+                    </p>
+                </x-alert>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <!-- Search Form -->
@@ -89,6 +98,9 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Perihal
                                     </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status Disposisi
+                                    </th>
                                     <th scope="col" class="relative px-6 py-3">
                                         <span class="sr-only">Aksi</span>
                                     </th>
@@ -122,6 +134,23 @@
                                                 {{ $surat->perihal }}
                                             </div>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($surat->sudahDisposisi())
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+                                                        <circle cx="4" cy="4" r="3" />
+                                                    </svg>
+                                                    Sudah Disposisi
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <svg class="-ml-0.5 mr-1                                .5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
+                                                        <circle cx="4" cy="4" r="3" />
+                                                    </svg>
+                                                    Belum Disposisi
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex items-center justify-end space-x-2">
                                                 <a href="{{ route('surat-masuk.show', $surat->surat_masuk_id) }}" class="text-indigo-600 hover:text-indigo-900" title="Lihat Detail">
@@ -135,26 +164,39 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                     </svg>
                                                 </a>
-                                                <button type="button"
-                                                        x-data
-                                                        @click="$dispatch('open-modal', '{{ 'confirm-delete-surat-' . $surat->surat_masuk_id }}')"
-                                                        class="text-red-600 hover:text-red-900" title="Hapus">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
+                                                @if($surat->bisaDihapus())
+                                                    <button type="button"
+                                                            x-data
+                                                            @click="$dispatch('open-modal', '{{ 'confirm-delete-surat-' . $surat->surat_masuk_id }}')"
+                                                            class="text-red-600 hover:text-red-900" title="Hapus">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                @else
+                                                    <button type="button" 
+                                                            disabled 
+                                                            class="text-gray-400 cursor-not-allowed" 
+                                                            title="Tidak dapat dihapus - surat sudah didisposisi">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                @endif
                                                 
-                                                <!-- Hidden Delete Form -->
-                                                <form id="delete-surat-form-{{ $surat->surat_masuk_id }}" action="{{ route('surat-masuk.destroy', $surat->surat_masuk_id) }}" method="POST" class="hidden">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
+                                                <!-- Hidden Delete Form - hanya untuk surat yang bisa dihapus -->
+                                                @if($surat->bisaDihapus())
+                                                    <form id="delete-surat-form-{{ $surat->surat_masuk_id }}" action="{{ route('surat-masuk.destroy', $surat->surat_masuk_id) }}" method="POST" class="hidden">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-12 text-center">
+                                        <td colspan="9" class="px-6 py-12 text-center">
                                             <div class="text-gray-400">
                                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -206,16 +248,18 @@
         </div>
     </div>
 
-    <!-- Confirm Modal Components for each delete action -->
+    <!-- Confirm Modal Components for each delete action - hanya untuk surat yang bisa dihapus -->
     @foreach ($suratMasuk as $surat)
-        <x-confirm-modal
-            name="{{ 'confirm-delete-surat-' . $surat->surat_masuk_id }}"
-            title="Konfirmasi Hapus"
-            :message="'Apakah Anda yakin ingin menghapus surat masuk dengan No Agenda ' . $surat->no_agenda . '? Tindakan ini tidak dapat dibatalkan.'"
-            confirmText="Hapus"
-            cancelText="Batal"
-            form="{{ 'delete-surat-form-' . $surat->surat_masuk_id }}"
-            variant="danger"
-        />
+        @if($surat->bisaDihapus())
+            <x-confirm-modal
+                name="{{ 'confirm-delete-surat-' . $surat->surat_masuk_id }}"
+                title="Konfirmasi Hapus"
+                :message="'Apakah Anda yakin ingin menghapus surat masuk dengan No Agenda ' . $surat->no_agenda . '? Tindakan ini tidak dapat dibatalkan.'"
+                confirmText="Hapus"
+                cancelText="Batal"
+                form="{{ 'delete-surat-form-' . $surat->surat_masuk_id }}"
+                variant="danger"
+            />
+        @endif
     @endforeach
 </x-app-layout>

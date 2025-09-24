@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SuratKeluar;
 use App\Models\UnitKerja;
 use App\Models\BagianSeksi;
+use Carbon\Carbon;
 
 class SuratKeluarController extends Controller
 {
@@ -105,7 +106,40 @@ class SuratKeluarController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $suratKeluar = SuratKeluar::with([
+            'creator', 
+            'unitKerjaTujuan', 
+            'bagianSeksiTujuan', 
+            'bagianSeksiPembuat'
+        ])->findOrFail($id);
+
+        // Format data untuk modal
+        $formattedSurat = [
+            'surat_keluar_id' => $suratKeluar->surat_keluar_id,
+            'surat_keluar_nomor' => $suratKeluar->surat_keluar_nomor,
+            'surat_keluar_tanggal_formatted' => $suratKeluar->surat_keluar_tanggal ? Carbon::parse($suratKeluar->surat_keluar_tanggal)->format('d/m/Y') : null,
+            'tujuan' => $suratKeluar->tujuan,
+            'perihal' => $suratKeluar->perihal,
+            'keterangan' => $suratKeluar->keterangan,
+            'berkas' => $suratKeluar->berkas,
+            'berkas_name' => $suratKeluar->berkas ? basename($suratKeluar->berkas) : null,
+            'berkas_url' => $suratKeluar->berkas ? asset('storage/' . $suratKeluar->berkas) : null,
+            'created_at_formatted' => $suratKeluar->created_at->format('d/m/Y H:i'),
+            'creator' => [
+                'nama' => $suratKeluar->creator?->nama
+            ],
+            'unit_kerja_tujuan' => [
+                'unit_kerja' => $suratKeluar->unitKerjaTujuan?->unit_kerja
+            ],
+            'bagian_seksi_tujuan' => [
+                'bagian_seksi' => $suratKeluar->bagianSeksiTujuan?->bagian_seksi
+            ],
+            'bagian_seksi_pembuat' => [
+                'bagian_seksi' => $suratKeluar->bagianSeksiPembuat?->bagian_seksi
+            ]
+        ];
+
+        return response()->json($formattedSurat);
     }
 
     /**

@@ -93,4 +93,24 @@ class SuratMasuk extends Model
     {
         return $this->hasMany(SuratMasukDisposisi::class, 'surat_masuk_id', 'surat_masuk_id');
     }
+
+    /**
+     * Cek apakah surat masuk sudah didisposisi.
+     *
+     * @return bool
+     */
+    public function sudahDisposisi(): bool
+    {
+        return $this->disposisi()->exists();
+    }
+
+    /**
+     * Cek apakah surat masuk bisa dihapus.
+     *
+     * @return bool
+     */
+    public function bisaDihapus(): bool
+    {
+        return !$this->sudahDisposisi();
+    }
 }

@@ -13,7 +13,7 @@ class SuratMasukController extends Controller
      */
     public function index(Request $request)
     {
-        $query = SuratMasuk::query()->with('creator');
+        $query = SuratMasuk::query()->with(['creator', 'disposisi']);
 
         // Pencarian sederhana di beberapa kolom
         $search = $request->get('search');
@@ -139,7 +139,14 @@ class SuratMasukController extends Controller
      */
     public function destroy(string $id)
     {
-        $suratMasuk = SuratMasuk::findOrFail($id);
+        $suratMasuk = SuratMasuk::with('disposisi')->findOrFail($id);
+        
+        // Cek apakah surat sudah didisposisi
+        if ($suratMasuk->sudahDisposisi()) {
+            return redirect()->route('surat-masuk.index')
+                ->with('error', 'Surat masuk tidak dapat dihapus karena sudah didisposisi.');
+        }
+        
         $suratMasuk->delete(); // Soft delete
 
         return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
