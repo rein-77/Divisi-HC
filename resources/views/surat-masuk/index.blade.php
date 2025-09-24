@@ -136,15 +136,42 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($surat->sudahDisposisi())
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+                                                <button type="button"
+                                                        x-data="{ loading: false }"
+                                                        @click="
+                                                            loading = true;
+                                                            fetch('{{ route('surat-masuk.disposisi', $surat->surat_masuk_id) }}')
+                                                                .then(response => response.json())
+                                                                .then(data => {
+                                                                    $dispatch('open-disposisi-modal', {
+                                                                        name: 'disposisi-detail-modal',
+                                                                        disposisi: data
+                                                                    });
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error('Error:', error);
+                                                                    alert('Terjadi kesalahan saat memuat detail disposisi');
+                                                                })
+                                                                .finally(() => {
+                                                                    loading = false;
+                                                                });
+                                                        "
+                                                        :disabled="loading"
+                                                        :class="loading ? 'cursor-not-allowed opacity-75' : 'hover:bg-green-200 cursor-pointer'"
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 transition-colors duration-200"
+                                                        title="Klik untuk melihat detail disposisi">
+                                                    <svg x-show="!loading" class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
                                                         <circle cx="4" cy="4" r="3" />
                                                     </svg>
-                                                    Sudah Disposisi
-                                                </span>
+                                                    <svg x-show="loading" class="-ml-0.5 mr-1.5 h-2 w-2 animate-spin text-green-400" fill="none" viewBox="0 0 24 24">
+                                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
+                                                        <path fill="currentColor" d="m4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"></path>
+                                                    </svg>
+                                                    <span x-text="loading ? 'Loading...' : 'Sudah Disposisi'"></span>
+                                                </button>
                                             @else
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                    <svg class="-ml-0.5 mr-1                                .5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
+                                                    <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
                                                         <circle cx="4" cy="4" r="3" />
                                                     </svg>
                                                     Belum Disposisi
@@ -262,4 +289,7 @@
             />
         @endif
     @endforeach
+
+    <!-- Disposisi Detail Modal -->
+    <x-disposisi-detail-modal name="disposisi-detail-modal" />
 </x-app-layout>

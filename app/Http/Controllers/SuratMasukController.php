@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SuratMasuk;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class SuratMasukController extends Controller
 {
@@ -85,6 +86,31 @@ class SuratMasukController extends Controller
     public function show(string $id)
     {
         $suratMasuk = SuratMasuk::with('creator')->findOrFail($id);
+        
+        // Jika request adalah AJAX, return JSON
+        if (request()->expectsJson()) {
+            $formattedSurat = [
+                'surat_masuk_id' => $suratMasuk->surat_masuk_id,
+                'no_agenda' => $suratMasuk->no_agenda,
+                'surat_masuk_nomor' => $suratMasuk->surat_masuk_nomor,
+                'surat_masuk_tanggal_formatted' => $suratMasuk->surat_masuk_tanggal ? Carbon::parse($suratMasuk->surat_masuk_tanggal)->format('d/m/Y') : null,
+                'tanggal_diterima_formatted' => $suratMasuk->tanggal_diterima ? Carbon::parse($suratMasuk->tanggal_diterima)->format('d/m/Y') : null,
+                'pengirim' => $suratMasuk->pengirim,
+                'tujuan' => $suratMasuk->tujuan,
+                'perihal' => $suratMasuk->perihal,
+                'keterangan' => $suratMasuk->keterangan,
+                'berkas' => $suratMasuk->berkas,
+                'berkas_name' => $suratMasuk->berkas ? basename($suratMasuk->berkas) : null,
+                'berkas_url' => $suratMasuk->berkas ? asset('storage/' . $suratMasuk->berkas) : null,
+                'created_at_formatted' => $suratMasuk->created_at->format('d/m/Y H:i'),
+                'creator' => [
+                    'nama' => $suratMasuk->creator?->nama
+                ]
+            ];
+
+            return response()->json($formattedSurat);
+        }
+        
         return view('surat-masuk.show', compact('suratMasuk'));
     }
 
@@ -150,5 +176,55 @@ class SuratMasukController extends Controller
         $suratMasuk->delete(); // Soft delete
 
         return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
+    }
+
+    /**
+     * Get disposisi details for modal.
+     */
+    public function getDisposisi(string $id)
+    {
+        $suratMasuk = SuratMasuk::with([
+            'disposisi.user',
+            'disposisi.bagianSeksi',
+            'disposisi.bagianSeksiMultiple',
+            'disposisi.disposisiOleh'
+        ])->findOrFail($id);
+
+        // Format data untuk modal
+        $formattedData = [
+            'surat_masuk' => [
+                'no_agenda' => $suratMasuk->no_agenda,
+                'surat_masuk_nomor' => $suratMasuk->surat_masuk_nomor,
+                'pengirim' => $suratMasuk->pengirim,
+                'perihal' => $suratMasuk->perihal,
+                'tanggal_diterima_formatted' => $suratMasuk->tanggal_diterima ? Carbon::parse($suratMasuk->tanggal_diterima)->format('d/m/Y') : null,
+            ],
+            'items' => $suratMasuk->disposisi->map(function ($disposisi) {
+                return [
+                    'surat_masuk_disposisi_id' => $disposisi->surat_masuk_disposisi_id,
+                    'keterangan' => $disposisi->keterangan,
+                    'waktu_disposisi_formatted' => $disposisi->waktu_disposisi ? Carbon::parse($disposisi->waktu_disposisi)->format('d/m/Y H:i') : null,
+                    'waktu_disposisi_day' => $disposisi->waktu_disposisi ? Carbon::parse($disposisi->waktu_disposisi)->translatedFormat('l') : null,
+                    'terakhir_diedit_formatted' => $disposisi->terakhir_diedit ? Carbon::parse($disposisi->terakhir_diedit)->format('d/m/Y H:i') : null,
+                    'user' => [
+                        'nama' => $disposisi->user?->nama
+                    ],
+                    'bagian_seksi' => [
+                        'bagian_seksi' => $disposisi->bagianSeksi?->bagian_seksi
+                    ],
+                    'bagian_seksi_multiple' => $disposisi->bagianSeksiMultiple->map(function ($bagian) {
+                        return [
+                            'bagian_seksi_id' => $bagian->bagian_seksi_id,
+                            'bagian_seksi' => $bagian->bagian_seksi
+                        ];
+                    }),
+                    'disposisi_oleh' => [
+                        'nama' => $disposisi->disposisiOleh?->nama
+                    ]
+                ];
+            })
+        ];
+
+        return response()->json($formattedData);
     }
 }

@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     
     // Surat Masuk Routes
     Route::resource('surat-masuk', SuratMasukController::class);
+    Route::get('surat-masuk/{id}/disposisi', [SuratMasukController::class, 'getDisposisi'])->name('surat-masuk.disposisi');
     
     // Surat Masuk Disposisi Routes
     Route::resource('surat-masuk-disposisi', SuratMasukDisposisiController::class);
