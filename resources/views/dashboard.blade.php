@@ -50,7 +50,7 @@
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-gray-600">Surat Masuk Hari Ini</p>
                                     <p class="text-3xl font-bold text-green-600">{{ $suratMasukHariIni }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">{{ date('d M Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ date('l, d M Y') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-gray-600">Surat Keluar Hari Ini</p>
                                     <p class="text-3xl font-bold text-blue-600">{{ $suratKeluarHariIni }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">{{ date('d M Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ date('l, d M Y') }}</p>
                                 </div>
                             </div>
                         </div>
