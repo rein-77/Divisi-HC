@@ -96,7 +96,7 @@ class DemoDataSeeder extends Seeder
                         'kota_kabupaten' => $unitData['kota_kabupaten'],
                         'created_at' => now(),
                         'updated_at' => now(),
-                    ]);
+                    ], 'unit_kerja_id');
                 } else {
                     $unitId = $existingUnit->unit_kerja_id;
                 }
@@ -119,7 +119,7 @@ class DemoDataSeeder extends Seeder
                             'unit_kerja_id' => $unitId,
                             'created_at' => now(),
                             'updated_at' => now(),
-                        ]);
+                        ], 'bagian_seksi_id');
 
                         // Store first bagian seksi ID for later use
                         if (!$firstBagianSeksiId) {
@@ -139,7 +139,7 @@ class DemoDataSeeder extends Seeder
                         'kota_kabupaten' => 'Banjarmasin',
                         'created_at' => now(),
                         'updated_at' => now(),
-                    ]);
+                    ], 'unit_kerja_id');
                 }
             }
 
@@ -163,7 +163,7 @@ class DemoDataSeeder extends Seeder
                     'jabatan_kode' => 'STF',
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ], 'jabatan_id');
             }
 
             // Create a demo pegawai if not exists
@@ -183,7 +183,7 @@ class DemoDataSeeder extends Seeder
                     'remember_token' => null,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ], 'user_id');
             } else {
                 $pegawaiId = $pegawai->user_id ?? $pegawai->id ?? null;
                 if (! $pegawaiId) {
@@ -196,7 +196,7 @@ class DemoDataSeeder extends Seeder
             $today = now();
             $tujuanOptions = [
                 'Bagian Kompensasi & Manfaat',
-                'Bagian Pendidikan & Pelatihan', 
+                'Bagian Pendidikan & Pelatihan',
                 'Bagian Penerimaan & Pengembangan Human Capital'
             ];
 
