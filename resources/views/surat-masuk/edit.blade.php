@@ -54,14 +54,14 @@
                             <!-- Nomor Surat (70%) -->
                             <div class="md:col-span-7">
                                 <x-input-label for="surat_masuk_nomor" :value="__('Nomor Surat')" />
-                                <x-text-input 
-                                    id="surat_masuk_nomor" 
-                                    name="surat_masuk_nomor" 
-                                    type="text" 
-                                    class="mt-1 block w-full" 
-                                    :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)" 
-                                    required 
-                                    autofocus 
+                                <x-text-input
+                                    id="surat_masuk_nomor"
+                                    name="surat_masuk_nomor"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    :value="old('surat_masuk_nomor', $suratMasuk->surat_masuk_nomor)"
+                                    required
+                                    autofocus
                                     placeholder="Contoh: 001/SK/2024"
                                 />
                                 <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_nomor')" />
@@ -70,13 +70,13 @@
                             <!-- No Agenda (30%) -->
                             <div class="md:col-span-3">
                                 <x-input-label for="no_agenda" value="No Agenda" />
-                                <x-text-input 
-                                    id="no_agenda" 
-                                    name="no_agenda" 
-                                    type="text" 
-                                    class="mt-1 block w-full bg-gray-100" 
+                                <x-text-input
+                                    id="no_agenda"
+                                    name="no_agenda"
+                                    type="text"
+                                    class="mt-1 block w-full bg-gray-100"
                                     value="{{ $suratMasuk->no_agenda }}"
-                                    readonly 
+                                    readonly
                                 />
                                 <p class="mt-1 text-xs text-gray-500">Tidak dapat diubah</p>
                             </div>
@@ -87,13 +87,13 @@
                             <!-- Tanggal Surat -->
                             <div>
                                 <x-input-label for="surat_masuk_tanggal" :value="__('Tanggal Surat')" />
-                                <x-text-input 
-                                    id="surat_masuk_tanggal" 
-                                    name="surat_masuk_tanggal" 
-                                    type="date" 
-                                    class="mt-1 block w-full" 
-                                    :value="old('surat_masuk_tanggal', $suratMasuk->surat_masuk_tanggal?->format('Y-m-d'))" 
-                                    required 
+                                <x-text-input
+                                    id="surat_masuk_tanggal"
+                                    name="surat_masuk_tanggal"
+                                    type="date"
+                                    class="mt-1 block w-full"
+                                    :value="old('surat_masuk_tanggal', $suratMasuk->surat_masuk_tanggal?->format('Y-m-d'))"
+                                    required
                                 />
                                 <x-input-error class="mt-2" :messages="$errors->get('surat_masuk_tanggal')" />
                             </div>
@@ -101,13 +101,13 @@
                             <!-- Tanggal Diterima -->
                             <div>
                                 <x-input-label for="tanggal_diterima" :value="__('Tanggal Diterima')" />
-                                <x-text-input 
-                                    id="tanggal_diterima" 
-                                    name="tanggal_diterima" 
-                                    type="date" 
-                                    class="mt-1 block w-full" 
-                                    :value="old('tanggal_diterima', $suratMasuk->tanggal_diterima?->format('Y-m-d'))" 
-                                    required 
+                                <x-text-input
+                                    id="tanggal_diterima"
+                                    name="tanggal_diterima"
+                                    type="date"
+                                    class="mt-1 block w-full"
+                                    :value="old('tanggal_diterima', $suratMasuk->tanggal_diterima?->format('Y-m-d'))"
+                                    required
                                 />
                                 <x-input-error class="mt-2" :messages="$errors->get('tanggal_diterima')" />
                             </div>
@@ -118,13 +118,13 @@
                             <!-- Pengirim -->
                             <div>
                                 <x-input-label for="pengirim" :value="__('Pengirim')" />
-                                <x-text-input 
-                                    id="pengirim" 
-                                    name="pengirim" 
-                                    type="text" 
-                                    class="mt-1 block w-full" 
-                                    :value="old('pengirim', $suratMasuk->pengirim)" 
-                                    required 
+                                <x-text-input
+                                    id="pengirim"
+                                    name="pengirim"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    :value="old('pengirim', $suratMasuk->pengirim)"
+                                    required
                                     placeholder="Nama pengirim surat"
                                 />
                                 <x-input-error class="mt-2" :messages="$errors->get('pengirim')" />
@@ -149,9 +149,9 @@
                         <!-- Perihal -->
                         <div>
                             <x-input-label for="perihal" :value="__('Perihal')" />
-                            <textarea 
-                                id="perihal" 
-                                name="perihal" 
+                            <textarea
+                                id="perihal"
+                                name="perihal"
                                 rows="4"
                                 class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 required
@@ -163,7 +163,7 @@
                         <!-- File Upload -->
                         <div>
                             <x-input-label for="berkas" :value="__('Berkas (Opsional)')" />
-                            
+
                             @if($suratMasuk->berkas)
                                 <div class="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
                                     <div class="flex items-center justify-between">
@@ -180,15 +180,15 @@
                                 </div>
                             @endif
 
-                            <input 
-                                id="berkas" 
-                                name="berkas" 
-                                type="file" 
+                            <input
+                                id="berkas"
+                                name="berkas"
+                                type="file"
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                accept=".pdf"
                             />
                             <p class="mt-1 text-sm text-gray-500">
-                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 10MB.
+                                Format yang diizinkan: PDF. Maksimal 10MB.
                                 @if($suratMasuk->berkas)
                                     <br><strong>Catatan:</strong> Upload file baru akan mengganti berkas yang sudah ada.
                                 @endif
@@ -199,9 +199,9 @@
                         <!-- Keterangan -->
                         <div>
                             <x-input-label for="keterangan" :value="__('Keterangan (Opsional)')" />
-                            <textarea 
-                                id="keterangan" 
-                                name="keterangan" 
+                            <textarea
+                                id="keterangan"
+                                name="keterangan"
                                 rows="4"
                                 class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 placeholder="Isi keterangan surat..."

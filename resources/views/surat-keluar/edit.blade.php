@@ -26,15 +26,15 @@
                             <!-- Nomor Surat -->
                             <div>
                                 <x-input-label for="surat_keluar_nomor" :value="__('Nomor Surat')" />
-                                <x-text-input 
-                                    id="surat_keluar_nomor" 
-                                    name="surat_keluar_nomor" 
-                                    type="text" 
-                                    class="mt-1 block w-full bg-gray-100" 
+                                <x-text-input
+                                    id="surat_keluar_nomor"
+                                    name="surat_keluar_nomor"
+                                    type="text"
+                                    class="mt-1 block w-full bg-gray-100"
                                     :value="old('surat_keluar_nomor', $suratKeluar->surat_keluar_nomor)"
                                     readonly
-                                    required 
-                                    autofocus 
+                                    required
+                                    autofocus
                                     placeholder="Contoh: 001/2025"
                                 />
                                 <p class="mt-1 text-xs text-gray-500">Nomor surat tidak dapat diubah</p>
@@ -43,13 +43,13 @@
                             <!-- Tanggal Surat -->
                             <div>
                                 <x-input-label for="surat_keluar_tanggal" :value="__('Tanggal Surat')" />
-                                <x-text-input 
-                                    id="surat_keluar_tanggal" 
-                                    name="surat_keluar_tanggal" 
-                                    type="date" 
-                                    class="mt-1 block w-full" 
-                                    :value="old('surat_keluar_tanggal', $suratKeluar->surat_keluar_tanggal?->format('Y-m-d'))" 
-                                    required 
+                                <x-text-input
+                                    id="surat_keluar_tanggal"
+                                    name="surat_keluar_tanggal"
+                                    type="date"
+                                    class="mt-1 block w-full"
+                                    :value="old('surat_keluar_tanggal', $suratKeluar->surat_keluar_tanggal?->format('Y-m-d'))"
+                                    required
                                 />
                                 <x-input-error class="mt-2" :messages="$errors->get('surat_keluar_tanggal')" />
                             </div>
@@ -59,7 +59,7 @@
                         <div class="border border-gray-200 rounded-lg p-4">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Tujuan Surat</h3>
                             <p class="text-sm text-gray-600 mb-4">Pilih salah satu: Isi tujuan manual atau pilih unit kerja/bagian seksi</p>
-                            
+
                             <!-- Tujuan Manual -->
                             <div class="mb-4">
                                 <x-input-label for="tujuan" :value="__('Tujuan (Manual)')" />
@@ -80,16 +80,16 @@
                                 <div>
                                     <x-input-label for="bagian_seksi_tujuan" :value="__('Bagian/Seksi Tujuan')" />
                                     <div class="relative">
-                                        <input 
-                                            type="text" 
-                                            id="bagian_seksi_search" 
+                                        <input
+                                            type="text"
+                                            id="bagian_seksi_search"
                                             placeholder="Cari dan pilih bagian/seksi..."
                                             class="mt-1 block w-full pr-10 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm surat-keluar-search"
                                             autocomplete="off"
                                         />
-                                        <button 
-                                            type="button" 
-                                            id="clear_bagian_seksi" 
+                                        <button
+                                            type="button"
+                                            id="clear_bagian_seksi"
                                             class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 hidden surat-keluar-clear-btn"
                                             title="Hapus pilihan"
                                         >
@@ -97,14 +97,14 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
                                         </button>
-                                        <input 
-                                            type="hidden" 
-                                            id="bagian_seksi_tujuan" 
+                                        <input
+                                            type="hidden"
+                                            id="bagian_seksi_tujuan"
                                             name="bagian_seksi_tujuan"
                                             value="{{ old('bagian_seksi_tujuan', $suratKeluar->bagian_seksi_tujuan) }}"
                                         />
-                                        <div 
-                                            id="bagian_seksi_dropdown" 
+                                        <div
+                                            id="bagian_seksi_dropdown"
                                             class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto hidden surat-keluar-dropdown"
                                         >
                                             <!-- Options will be populated by JavaScript -->
@@ -116,16 +116,16 @@
                                 <!-- Unit Kerja Tujuan -->
                                 <div>
                                     <x-input-label for="unit_kerja_tujuan" :value="__('Unit Kerja Tujuan')" />
-                                    <x-text-input 
-                                        id="unit_kerja_display" 
-                                        type="text" 
-                                        class="mt-1 block w-full bg-gray-100" 
+                                    <x-text-input
+                                        id="unit_kerja_display"
+                                        type="text"
+                                        class="mt-1 block w-full bg-gray-100"
                                         placeholder="Otomatis terisi saat memilih bagian/seksi"
                                         readonly
                                     />
-                                    <input 
-                                        type="hidden" 
-                                        id="unit_kerja_tujuan" 
+                                    <input
+                                        type="hidden"
+                                        id="unit_kerja_tujuan"
                                         name="unit_kerja_tujuan"
                                         value="{{ old('unit_kerja_tujuan', $suratKeluar->unit_kerja_tujuan) }}"
                                     />
@@ -137,9 +137,9 @@
                         <!-- Perihal -->
                         <div>
                             <x-input-label for="perihal" :value="__('Perihal')" />
-                            <textarea 
-                                id="perihal" 
-                                name="perihal" 
+                            <textarea
+                                id="perihal"
+                                name="perihal"
                                 rows="4"
                                 class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 required
@@ -151,27 +151,27 @@
                         <!-- File Upload -->
                         <div>
                             <x-input-label for="berkas" :value="__('Berkas (Opsional)')" />
-                            
+
                             @if($suratKeluar->berkas)
                                 <div class="mb-2 p-3 bg-gray-50 rounded-md">
                                     <p class="text-sm text-gray-600">File saat ini:</p>
-                                    <a href="{{ \Illuminate\Support\Facades\Storage::url($suratKeluar->berkas) }}" 
-                                       target="_blank" 
+                                    <a href="{{ \Illuminate\Support\Facades\Storage::url($suratKeluar->berkas) }}"
+                                       target="_blank"
                                        class="text-indigo-600 hover:text-indigo-800 text-sm">
                                         {{ basename($suratKeluar->berkas) }}
                                     </a>
                                 </div>
                             @endif
-                            
-                            <input 
-                                id="berkas" 
-                                name="berkas" 
-                                type="file" 
+
+                            <input
+                                id="berkas"
+                                name="berkas"
+                                type="file"
                                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                accept=".pdf"
                             />
                             <p class="mt-1 text-sm text-gray-500">
-                                Format yang diizinkan: PDF, DOC, DOCX, JPG, JPEG, PNG. Maksimal 10MB.
+                                Format yang diizinkan: PDF. Maksimal 10MB.
                                 @if($suratKeluar->berkas)
                                     <br><strong>Catatan:</strong> Upload file baru akan mengganti file yang ada.
                                 @endif
@@ -182,9 +182,9 @@
                         <!-- Keterangan -->
                         <div>
                             <x-input-label for="keterangan" :value="__('Keterangan (Opsional)')" />
-                            <textarea 
-                                id="keterangan" 
-                                name="keterangan" 
+                            <textarea
+                                id="keterangan"
+                                name="keterangan"
                                 rows="4"
                                 class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 placeholder="Isi keterangan surat..."
@@ -195,8 +195,8 @@
                         <!-- Bagian Seksi Pembuat -->
                         <div>
                             <x-input-label for="bagian_seksi_pembuat" :value="__('Bagian/Seksi Pembuat')" />
-                            <select 
-                                id="bagian_seksi_pembuat" 
+                            <select
+                                id="bagian_seksi_pembuat"
                                 name="bagian_seksi_pembuat"
                                 class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 required
@@ -233,7 +233,7 @@
     <script>
         // Set bagian seksi data for the form handler
         window.bagianSeksiData = @json(\App\Models\BagianSeksi::with('unitKerja')->get());
-        
+
         // Initialize the form handler when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Surat Keluar Form Handler
