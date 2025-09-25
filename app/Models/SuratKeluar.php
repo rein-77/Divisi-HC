@@ -36,9 +36,19 @@ class SuratKeluar extends Model
     {
         $currentYear = date('Y');
         
-        // Hitung jumlah surat keluar di tahun ini
-        $count = self::whereYear('created_at', $currentYear)->count();
-        $nextNumber = $count + 1;
+        // Cari nomor terakhir yang pernah digunakan di tahun ini
+        $lastSurat = self::whereYear('created_at', $currentYear)
+            ->orderByRaw('CAST(SUBSTRING_INDEX(surat_keluar_nomor, "/", 1) AS UNSIGNED) DESC')
+            ->first();
+        
+        if ($lastSurat) {
+            // Ambil nomor dari surat terakhir dan tambah 1
+            $lastNumber = (int) explode('/', $lastSurat->surat_keluar_nomor)[0];
+            $nextNumber = $lastNumber + 1;
+        } else {
+            // Jika belum ada surat di tahun ini, mulai dari 1
+            $nextNumber = 1;
+        }
         
         // Format dengan padding 3 digit
         return sprintf('%03d/%s', $nextNumber, $currentYear);

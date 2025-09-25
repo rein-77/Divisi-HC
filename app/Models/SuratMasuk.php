@@ -70,9 +70,19 @@ class SuratMasuk extends Model
     {
         $currentYear = date('Y');
         
-        // Hitung jumlah surat masuk di tahun ini
-        $count = self::whereYear('created_at', $currentYear)->count();
-        $nextNumber = $count + 1;
+        // Cari nomor terakhir yang pernah digunakan di tahun ini
+        $lastSurat = self::whereYear('created_at', $currentYear)
+            ->orderByRaw('CAST(SUBSTRING_INDEX(no_agenda, "/", 1) AS UNSIGNED) DESC')
+            ->first();
+        
+        if ($lastSurat) {
+            // Ambil nomor dari agenda terakhir dan tambah 1
+            $lastNumber = (int) explode('/', $lastSurat->no_agenda)[0];
+            $nextNumber = $lastNumber + 1;
+        } else {
+            // Jika belum ada surat di tahun ini, mulai dari 1
+            $nextNumber = 1;
+        }
         
         // Format dengan padding 3 digit
         return sprintf('%03d/%s', $nextNumber, $currentYear);
