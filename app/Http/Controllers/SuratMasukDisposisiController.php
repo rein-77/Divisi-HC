@@ -68,13 +68,20 @@ class SuratMasukDisposisiController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, $surat_masuk_id = null)
     {
-        $suratMasukId = $request->get('surat_masuk_id');
+        // Ambil dari parameter URL atau query string
+        $suratMasukId = $surat_masuk_id ?? $request->get('surat_masuk_id');
         $suratMasuk = null;
         
         if ($suratMasukId) {
             $suratMasuk = SuratMasuk::findOrFail($suratMasukId);
+            
+            // Cek apakah surat sudah didisposisi
+            if ($suratMasuk->sudahDisposisi()) {
+                return redirect()->route('surat-masuk.index')
+                    ->with('error', 'Surat ini sudah didisposisi dan tidak dapat didisposisi lagi.');
+            }
         }
 
         // Only show sections from Human Capital division

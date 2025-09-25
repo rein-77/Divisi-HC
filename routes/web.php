@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     
     // Surat Masuk Disposisi Routes
     Route::resource('surat-masuk-disposisi', SuratMasukDisposisiController::class);
+    Route::get('surat-masuk/{surat_masuk_id}/disposisi/create', [SuratMasukDisposisiController::class, 'create'])->name('surat-masuk-disposisi.create');
 
     Route::resource('surat-keluar', SuratKeluarController::class);
 });

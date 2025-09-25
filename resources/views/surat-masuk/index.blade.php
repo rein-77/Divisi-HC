@@ -170,12 +170,16 @@
                                                     <span x-text="loading ? 'Loading...' : 'Sudah Disposisi'"></span>
                                                 </button>
                                             @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                <button type="button"
+                                                        x-data="{ modalId: 'confirm-disposisi-{{ $surat->surat_masuk_id }}' }"
+                                                        @click="$dispatch('open-modal', modalId)"
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200 cursor-pointer transition-colors duration-200"
+                                                        title="Klik untuk mengisi disposisi surat">
                                                     <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
                                                         <circle cx="4" cy="4" r="3" />
                                                     </svg>
                                                     Belum Disposisi
-                                                </span>
+                                                </button>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -287,6 +291,75 @@
                 form="{{ 'delete-surat-form-' . $surat->surat_masuk_id }}"
                 variant="danger"
             />
+        @endif
+    @endforeach
+
+    <!-- Confirm Modal Components for disposisi action - hanya untuk surat yang belum didisposisi -->
+    @foreach ($suratMasuk as $surat)
+        @if(!$surat->sudahDisposisi())
+            <div
+                x-data="{ open: false }"
+                x-on:open-modal.window="if ($event.detail === 'confirm-disposisi-{{ $surat->surat_masuk_id }}') open = true"
+                x-on:close-modal.window="open = false"
+                x-on:keydown.escape.window="open = false"
+                x-show="open"
+                x-transition.opacity
+                class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                aria-modal="true"
+                role="dialog"
+                style="display: none;"
+            >
+                <!-- Overlay -->
+                <div class="fixed inset-0 bg-gray-500/50" x-show="open" x-transition.opacity @click="open = false"></div>
+
+                <!-- Modal Panel -->
+                <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4" x-show="open" x-transition.scale>
+                    <div class="p-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-3 w-0 flex-1">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Konfirmasi Disposisi</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-600 mb-3">
+                                        Apakah Anda ingin mengisi disposisi untuk surat masuk dengan:
+                                    </p>
+                                    <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                                        <div class="text-sm">
+                                            <div class="font-medium text-gray-900">No Agenda: {{ $surat->no_agenda }}</div>
+                                            <div class="text-gray-600 mt-1">Pengirim: {{ $surat->pengirim }}</div>
+                                            <div class="text-gray-600">Perihal: {{ Str::limit($surat->perihal, 50) }}</div>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">
+                                        Anda akan diarahkan ke halaman disposisi surat.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 flex justify-end space-x-3">
+                        <button type="button"
+                            class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition"
+                            @click="open = false"
+                        >
+                            Batal
+                        </button>
+                        <a href="{{ route('surat-masuk-disposisi.create', $surat->surat_masuk_id) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Ya, Isi Disposisi
+                        </a>
+                    </div>
+                </div>
+            </div>
         @endif
     @endforeach
 
