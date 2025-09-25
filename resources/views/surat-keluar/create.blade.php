@@ -61,14 +61,26 @@
                             <!-- Tujuan Manual -->
                             <div class="mb-4">
                                 <x-input-label for="tujuan" :value="__('Tujuan (Manual)')" />
-                                <x-text-input
-                                    id="tujuan"
-                                    name="tujuan"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    :value="old('tujuan')"
-                                    placeholder="Contoh: PT. ABC atau Divisi Keuangan"
-                                />
+                                <div class="relative">
+                                    <x-text-input
+                                        id="tujuan"
+                                        name="tujuan"
+                                        type="text"
+                                        class="mt-1 block w-full transition-colors pr-10"
+                                        :value="old('tujuan')"
+                                        placeholder="Contoh: PT. ABC atau Divisi Keuangan"
+                                    />
+                                    <button
+                                        type="button"
+                                        id="clear_tujuan"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 hidden"
+                                        title="Hapus isi tujuan"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('tujuan')" />
                             </div>
 
@@ -82,7 +94,7 @@
                                             type="text"
                                             id="bagian_seksi_search"
                                             placeholder="Cari dan pilih bagian/seksi..."
-                                            class="mt-1 block w-full pr-10 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm surat-keluar-search"
+                                                class="mt-1 block w-full pr-10 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm surat-keluar-search transition-colors"
                                             autocomplete="off"
                                         />
                                         <button

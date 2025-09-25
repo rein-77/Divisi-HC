@@ -13,6 +13,7 @@ class SuratKeluarForm {
             unitKerjaDisplayId: 'unit_kerja_display',
             unitKerjaHiddenId: 'unit_kerja_tujuan',
             clearButtonId: 'clear_bagian_seksi',
+            clearTujuanId: 'clear_tujuan',
             ...config
         };
 
@@ -54,7 +55,8 @@ class SuratKeluarForm {
             bagianSeksiDropdown: document.getElementById(this.config.bagianSeksiDropdownId),
             unitKerjaDisplay: document.getElementById(this.config.unitKerjaDisplayId),
             unitKerjaHidden: document.getElementById(this.config.unitKerjaHiddenId),
-            clearButton: document.getElementById(this.config.clearButtonId)
+            clearButton: document.getElementById(this.config.clearButtonId),
+            clearTujuan: document.getElementById(this.config.clearTujuanId)
         };
     }
 
@@ -79,11 +81,23 @@ class SuratKeluarForm {
 
     bindEvents() {
         // Tujuan input events
-        this.elements.tujuanInput.addEventListener('input', () => this.toggleFields());
+        this.elements.tujuanInput.addEventListener('input', () => {
+            this.toggleFields();
+        });
 
         // Clear button event
         if (this.elements.clearButton) {
             this.elements.clearButton.addEventListener('click', () => this.clearSelection());
+        }
+
+        // Clear tujuan button event
+        if (this.elements.clearTujuan) {
+            this.elements.clearTujuan.addEventListener('click', () => {
+                if (this.elements.tujuanInput.disabled) return; // safety
+                this.elements.tujuanInput.value = '';
+                this.toggleFields();
+                this.elements.tujuanInput.focus();
+            });
         }
 
         // Bagian seksi search events
@@ -104,6 +118,15 @@ class SuratKeluarForm {
         }
     }
 
+    toggleTujuanClearButton(show) {
+        if (!this.elements.clearTujuan) return;
+        if (show) {
+            this.elements.clearTujuan.classList.remove('hidden');
+        } else {
+            this.elements.clearTujuan.classList.add('hidden');
+        }
+    }
+
     clearSelection() {
         this.elements.bagianSeksiSearch.value = '';
         this.elements.bagianSeksiHidden.value = '';
@@ -117,9 +140,8 @@ class SuratKeluarForm {
     toggleFields() {
         const tujuanFilled = this.elements.tujuanInput.value.trim() !== '';
         const bagianSeksiSelected = this.elements.bagianSeksiHidden.value !== '';
-
         if (tujuanFilled) {
-            // Disable bagian seksi search
+            // Disable bagian seksi search and reset selection
             this.elements.bagianSeksiSearch.disabled = true;
             this.elements.bagianSeksiSearch.value = '';
             this.elements.bagianSeksiHidden.value = '';
@@ -129,13 +151,36 @@ class SuratKeluarForm {
             if (this.elements.clearButton) {
                 this.elements.clearButton.classList.add('hidden');
             }
+
+            // Style bagian seksi as disabled
+            this.elements.bagianSeksiSearch.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+
+            // Ensure tujuan input looks enabled (because user typed into it)
+            this.elements.tujuanInput.disabled = false;
+            this.elements.tujuanInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+
+            // Show tujuan clear button
+            this.toggleTujuanClearButton(true);
         } else if (bagianSeksiSelected) {
-            // Disable tujuan
+            // Disable tujuan input and style it as disabled (gray)
             this.elements.tujuanInput.disabled = true;
+            this.elements.tujuanInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+
+            // Ensure bagian seksi search appears enabled (normal styling)
+            this.elements.bagianSeksiSearch.disabled = false;
+            this.elements.bagianSeksiSearch.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+
+            // Hide tujuan clear button when disabled
+            this.toggleTujuanClearButton(false);
         } else {
-            // Enable all
+            // Enable all and remove disabled styling
             this.elements.tujuanInput.disabled = false;
             this.elements.bagianSeksiSearch.disabled = false;
+            this.elements.tujuanInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+            this.elements.bagianSeksiSearch.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+
+            // Show tujuan clear button only if has value
+            this.toggleTujuanClearButton(this.elements.tujuanInput.value.trim() !== '');
         }
     }
 
