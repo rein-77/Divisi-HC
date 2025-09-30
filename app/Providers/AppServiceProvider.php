@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\RiwayatAkses;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Event listener untuk login
+        Event::listen(Login::class, function (Login $event) {
+            RiwayatAkses::create([
+                'status' => 'login',
+                'user_id' => $event->user->user_id,
+                'waktu' => now(),
+            ]);
+        });
+
+        // Event listener untuk logout  
+        Event::listen(Logout::class, function (Logout $event) {
+            RiwayatAkses::create([
+                'status' => 'logout',
+                'user_id' => $event->user->user_id,
+                'waktu' => now(),
+            ]);
+        });
     }
 }
