@@ -158,6 +158,25 @@
                             <x-input-error class="mt-2" :messages="$errors->get('perihal')" />
                         </div>
 
+                        <!-- Bagian Seksi Pembuat -->
+                        <div>
+                            <x-input-label for="bagian_seksi_pembuat" :value="__('Bagian/Seksi Pembuat')" />
+                            <select
+                                id="bagian_seksi_pembuat"
+                                name="bagian_seksi_pembuat"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                required
+                            >
+                                <option value="">Pilih Bagian/Seksi Pembuat</option>
+                                @foreach($bagianSeksiPembuat as $bagian)
+                                    <option value="{{ $bagian->bagian_seksi_id }}" {{ old('bagian_seksi_pembuat') == $bagian->bagian_seksi_id ? 'selected' : '' }}>
+                                        {{ $bagian->bagian_seksi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('bagian_seksi_pembuat')" />
+                        </div>
+
                         <!-- File Upload -->
                         <div>
                             <x-input-label for="berkas" :value="__('Berkas (Opsional)')" />
@@ -185,25 +204,6 @@
                                 placeholder="Isi keterangan surat..."
                             >{{ old('keterangan') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('keterangan')" />
-                        </div>
-
-                        <!-- Bagian Seksi Pembuat -->
-                        <div>
-                            <x-input-label for="bagian_seksi_pembuat" :value="__('Bagian/Seksi Pembuat')" />
-                            <select
-                                id="bagian_seksi_pembuat"
-                                name="bagian_seksi_pembuat"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                required
-                            >
-                                <option value="">Pilih Bagian/Seksi Pembuat</option>
-                                @foreach($bagianSeksiPembuat as $bagian)
-                                    <option value="{{ $bagian->bagian_seksi_id }}" {{ old('bagian_seksi_pembuat') == $bagian->bagian_seksi_id ? 'selected' : '' }}>
-                                        {{ $bagian->bagian_seksi }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('bagian_seksi_pembuat')" />
                         </div>
 
                         <!-- Action Buttons -->

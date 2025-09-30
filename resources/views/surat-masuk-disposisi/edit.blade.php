@@ -86,28 +86,51 @@
 
                         <!-- Pilih Bagian Seksi (Multiple) -->
                         <div>
+                            @php
+                                $selectedBagianSeksi = old('bagian_seksi_ids', $disposisi->bagianSeksiMultiple->pluck('bagian_seksi_id')->toArray());
+                                // Also include the single bagian_seksi_id if it exists
+                                if ($disposisi->bagian_seksi_id && !in_array($disposisi->bagian_seksi_id, $selectedBagianSeksi)) {
+                                    $selectedBagianSeksi[] = $disposisi->bagian_seksi_id;
+                                }
+                            @endphp
                             <x-input-label for="bagian_seksi_ids" value="Bagian/Seksi Tujuan (Dapat memilih lebih dari satu)" />
-                            <div class="mt-2 space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3">
-                                @php
-                                    $selectedBagianSeksi = old('bagian_seksi_ids', $disposisi->bagianSeksiMultiple->pluck('bagian_seksi_id')->toArray());
-                                    // Also include the single bagian_seksi_id if it exists
-                                    if ($disposisi->bagian_seksi_id && !in_array($disposisi->bagian_seksi_id, $selectedBagianSeksi)) {
-                                        $selectedBagianSeksi[] = $disposisi->bagian_seksi_id;
-                                    }
-                                @endphp
-                                @foreach($bagianSeksi as $bagian)
-                                    <label class="flex items-center">
-                                        <input type="checkbox" 
-                                               name="bagian_seksi_ids[]" 
-                                               value="{{ $bagian->bagian_seksi_id }}" 
-                                               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                               {{ in_array($bagian->bagian_seksi_id, $selectedBagianSeksi) ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm text-gray-700">{{ $bagian->bagian_seksi }}</span>
-                                    </label>
-                                @endforeach
+                            <div class="relative mt-1" x-data="multiSelect({{ json_encode($bagianSeksi->map(function($bagian) { return ['id' => $bagian->bagian_seksi_id, 'name' => $bagian->bagian_seksi]; })) }}, {{ json_encode($selectedBagianSeksi) }})">
+                                <!-- Dropdown Button -->
+                                <button type="button" @click="open = !open" 
+                                        class="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="flex items-center justify-between">
+                                        <span class="block truncate" x-text="selectedText"></span>
+                                        <svg class="h-5 w-5 text-gray-400 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <!-- Dropdown Panel -->
+                                <div x-show="open" @click.away="open = false" 
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                                     style="display: none;">
+                                    <template x-for="option in options" :key="option.id">
+                                        <label class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                            <input type="checkbox" 
+                                                   name="bagian_seksi_ids[]" 
+                                                   :value="option.id"
+                                                   @change="toggleOption(option.id)"
+                                                   :checked="selected.includes(option.id)"
+                                                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                            <span class="ml-3 text-sm text-gray-700" x-text="option.name"></span>
+                                        </label>
+                                    </template>
+                                </div>
                             </div>
                             <x-input-error :messages="$errors->get('bagian_seksi_ids')" class="mt-2" />
-                            <p class="mt-1 text-xs text-gray-500">Pilih satu atau lebih bagian/seksi untuk disposisi</p>
+                            <p class="mt-1 text-xs text-gray-500">Klik untuk memilih satu atau lebih bagian/seksi</p>
                         </div>
 
                         <!-- Keterangan -->

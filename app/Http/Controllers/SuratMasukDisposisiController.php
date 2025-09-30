@@ -20,12 +20,12 @@ class SuratMasukDisposisiController extends Controller
         $tanggal = $request->get('tanggal', now()->format('Y-m-d'));
         $search = $request->get('search');
         
-        // Surat masuk yang belum didisposisi
+        // Surat masuk yang belum didisposisi dengan pagination
         $suratBelumDisposisi = SuratMasuk::with('creator')
             ->whereDoesntHave('disposisi')
             ->orderByDesc('no_agenda')
-            ->limit(10)
-            ->get();
+            ->paginate(10, ['*'], 'belum_page')
+            ->withQueryString();
 
         // Riwayat disposisi berdasarkan tanggal dan search
         $riwayatQuery = SuratMasukDisposisi::with(['suratMasuk.creator', 'user', 'bagianSeksi', 'disposisiOleh', 'bagianSeksiMultiple']);
@@ -56,7 +56,7 @@ class SuratMasukDisposisiController extends Controller
             $riwayatQuery->whereDate('waktu_disposisi', $tanggal);
         }
         
-        $riwayatDisposisi = $riwayatQuery->orderByDesc('waktu_disposisi')->get();
+        $riwayatDisposisi = $riwayatQuery->orderByDesc('waktu_disposisi')->paginate(10, ['*'], 'riwayat_page')->withQueryString();
 
         return view('surat-masuk-disposisi.index', [
             'suratBelumDisposisi' => $suratBelumDisposisi,

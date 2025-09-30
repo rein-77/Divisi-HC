@@ -261,7 +261,7 @@
                     <!-- Pagination -->
                     @if($suratMasuk->hasPages())
                         <div class="mt-6">
-                            {{ $suratMasuk->links() }}
+                            <x-pagination :paginator="$suratMasuk" />
                         </div>
                     @endif
 

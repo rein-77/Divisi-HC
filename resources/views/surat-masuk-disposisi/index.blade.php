@@ -25,7 +25,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-medium text-gray-900">Surat Masuk Belum Didisposisi</h3>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            {{ $suratBelumDisposisi->count() }} surat
+                            {{ $suratBelumDisposisi->total() }} surat
                         </span>
                     </div>
 
@@ -105,6 +105,11 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination untuk Surat Belum Didisposisi -->
+                        <div class="mt-6">
+                            <x-pagination :paginator="$suratBelumDisposisi" />
+                        </div>
                     @else
                         <div class="text-center py-8">
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,12 +174,12 @@
                         <div class="mb-4 text-sm text-gray-600">
                             Menampilkan hasil pencarian global untuk: <strong>"{{ request('search') }}"</strong>
                             <span class="ml-1 text-gray-500">(tanpa filter tanggal)</span>
-                            <span class="ml-1">— {{ $riwayatDisposisi->count() }} hasil ditemukan</span>
+                            <span class="ml-1">— {{ $riwayatDisposisi->total() }} hasil ditemukan</span>
                         </div>
                     @endif
 
                     @if($riwayatDisposisi->count() > 0)
-                        <div class="space-y-4">
+                        <div class="space-y-4 mb-6">
                             @foreach($riwayatDisposisi as $disposisi)
                                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                     <div class="flex justify-between items-start">
@@ -262,6 +267,11 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="mt-6">
+                            <x-pagination :paginator="$riwayatDisposisi" />
                         </div>
                     @else
                         <div class="text-center py-8">
