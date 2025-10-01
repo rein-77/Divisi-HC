@@ -16,9 +16,16 @@ class SuratMasukDisposisiController extends Controller
      */
     public function index(Request $request)
     {
-        // Get tanggal filter (default hari ini)
-        $tanggal = $request->get('tanggal', now()->format('Y-m-d'));
+        // Get filter parameters
+        $tanggalMulai = $request->get('tanggal_mulai');
+        $tanggalSelesai = $request->get('tanggal_selesai');
         $search = $request->get('search');
+        $advanceSearch = $request->get('advance_search', 'off');
+        $noAgenda = $request->get('no_agenda');
+        $pengirim = $request->get('pengirim');
+        $perihal = $request->get('perihal');
+        $bagianSeksi = $request->get('bagian_seksi');
+        $disposisiOleh = $request->get('disposisi_oleh');
         
         // Surat masuk yang belum didisposisi dengan pagination
         $suratBelumDisposisi = SuratMasuk::with('creator')
@@ -27,11 +34,43 @@ class SuratMasukDisposisiController extends Controller
             ->paginate(10, ['*'], 'belum_page')
             ->withQueryString();
 
-        // Riwayat disposisi berdasarkan tanggal dan search
+        // Riwayat disposisi - default menampilkan 10 terbaru
         $riwayatQuery = SuratMasukDisposisi::with(['suratMasuk.creator', 'user', 'bagianSeksi', 'disposisiOleh', 'bagianSeksiMultiple']);
         
-        // Apply search filter if provided
-        if ($search) {
+        // Apply advance search filters
+        if ($advanceSearch === 'on') {
+            if ($noAgenda) {
+                $riwayatQuery->whereHas('suratMasuk', function($q) use ($noAgenda) {
+                    $q->where('no_agenda', 'like', "%{$noAgenda}%");
+                });
+            }
+            if ($pengirim) {
+                $riwayatQuery->whereHas('suratMasuk', function($q) use ($pengirim) {
+                    $q->where('pengirim', 'like', "%{$pengirim}%");
+                });
+            }
+            if ($perihal) {
+                $riwayatQuery->whereHas('suratMasuk', function($q) use ($perihal) {
+                    $q->where('perihal', 'like', "%{$perihal}%");
+                });
+            }
+            if ($bagianSeksi) {
+                $riwayatQuery->where(function($query) use ($bagianSeksi) {
+                    $query->whereHas('bagianSeksiMultiple', function($q) use ($bagianSeksi) {
+                        $q->where('bagian_seksi', 'like', "%{$bagianSeksi}%");
+                    })
+                    ->orWhereHas('bagianSeksi', function($q) use ($bagianSeksi) {
+                        $q->where('bagian_seksi', 'like', "%{$bagianSeksi}%");
+                    });
+                });
+            }
+            if ($disposisiOleh) {
+                $riwayatQuery->whereHas('disposisiOleh', function($q) use ($disposisiOleh) {
+                    $q->where('nama', 'like', "%{$disposisiOleh}%");
+                });
+            }
+        } elseif ($search) {
+            // Apply global search filter
             $riwayatQuery->where(function($query) use ($search) {
                 $query->whereHas('suratMasuk', function($q) use ($search) {
                     $q->where('no_agenda', 'like', "%{$search}%")
@@ -51,17 +90,36 @@ class SuratMasukDisposisiController extends Controller
                     $q->where('bagian_seksi', 'like', "%{$search}%");
                 });
             });
-        } else {
-            // Only apply date filter if no search is provided
-            $riwayatQuery->whereDate('waktu_disposisi', $tanggal);
         }
         
-        $riwayatDisposisi = $riwayatQuery->orderByDesc('waktu_disposisi')->paginate(10, ['*'], 'riwayat_page')->withQueryString();
+        // Apply date range filter only if specified
+        if ($tanggalMulai && $tanggalSelesai) {
+            $riwayatQuery->whereBetween('waktu_disposisi', [
+                Carbon::parse($tanggalMulai)->startOfDay(),
+                Carbon::parse($tanggalSelesai)->endOfDay()
+            ]);
+        } elseif ($tanggalMulai) {
+            $riwayatQuery->whereDate('waktu_disposisi', '>=', $tanggalMulai);
+        } elseif ($tanggalSelesai) {
+            $riwayatQuery->whereDate('waktu_disposisi', '<=', $tanggalSelesai);
+        }
+        
+        $riwayatDisposisi = $riwayatQuery->orderByDesc('waktu_disposisi')
+                                        ->paginate(10, ['*'], 'riwayat_page')
+                                        ->withQueryString();
 
         return view('surat-masuk-disposisi.index', [
             'suratBelumDisposisi' => $suratBelumDisposisi,
             'riwayatDisposisi' => $riwayatDisposisi,
-            'tanggal' => $tanggal,
+            'tanggalMulai' => $tanggalMulai,
+            'tanggalSelesai' => $tanggalSelesai,
+            'search' => $search,
+            'advanceSearch' => $advanceSearch,
+            'noAgenda' => $noAgenda,
+            'pengirim' => $pengirim,
+            'perihal' => $perihal,
+            'bagianSeksi' => $bagianSeksi,
+            'disposisiOleh' => $disposisiOleh,
         ]);
     }
 

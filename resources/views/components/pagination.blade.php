@@ -43,7 +43,7 @@
                 <p class="text-sm text-gray-700 leading-5">
                     Menampilkan
                     <span class="font-medium">{{ $paginator->firstItem() ?? 0 }}</span>
-                    sampai
+                    -
                     <span class="font-medium">{{ $paginator->lastItem() ?? 0 }}</span>
                     dari
                     <span class="font-medium">{{ $paginator->total() }}</span>

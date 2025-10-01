@@ -87,6 +87,18 @@ class SuratKeluarController extends Controller
             'bagian_seksi_pembuat' => 'required|exists:bagian_seksi,bagian_seksi_id',
         ]);
 
+        // Custom validation: ensure either tujuan OR bagian_seksi_tujuan is filled
+        if (empty($validated['tujuan']) && empty($validated['bagian_seksi_tujuan'])) {
+            return back()->withErrors([
+                'tujuan' => 'Silakan pilih tujuan manual atau bagian/seksi tujuan.'
+            ])->withInput();
+        }
+
+        // If bagian_seksi_tujuan is selected, clear tujuan and set it to empty string
+        if (!empty($validated['bagian_seksi_tujuan'])) {
+            $validated['tujuan'] = '';
+        }
+
         // Handle file upload
         if ($request->hasFile('berkas')) {
             $validated['berkas'] = $request->file('berkas')->store('surat-keluar', 'public');
@@ -182,6 +194,18 @@ class SuratKeluarController extends Controller
             'keterangan' => 'nullable|string',
             'bagian_seksi_pembuat' => 'required|exists:bagian_seksi,bagian_seksi_id',
         ]);
+
+        // Custom validation: ensure either tujuan OR bagian_seksi_tujuan is filled
+        if (empty($validated['tujuan']) && empty($validated['bagian_seksi_tujuan'])) {
+            return back()->withErrors([
+                'tujuan' => 'Silakan pilih tujuan manual atau bagian/seksi tujuan.'
+            ])->withInput();
+        }
+
+        // If bagian_seksi_tujuan is selected, clear tujuan and set it to empty string
+        if (!empty($validated['bagian_seksi_tujuan'])) {
+            $validated['tujuan'] = '';
+        }
 
         // Handle file upload
         if ($request->hasFile('berkas')) {

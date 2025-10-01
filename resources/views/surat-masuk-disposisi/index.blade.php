@@ -125,56 +125,184 @@
             <!-- Riwayat Disposisi -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-3 sm:space-y-0">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
                         <h3 class="text-lg font-medium text-gray-900">Riwayat Disposisi</h3>
                         
-                        <!-- Search and Date Filter -->
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                            <!-- Global Search -->
-                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex items-center space-x-2">
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Toggle Advanced Search -->
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" 
+                                       id="toggle-advance-search" 
+                                       {{ $advanceSearch === 'on' ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-600">Pencarian Lanjutan</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Search Filters -->
+                    <div class="mb-6 space-y-4">
+                        <!-- Simple Search (default) -->
+                        <div id="simple-search" class="{{ $advanceSearch === 'on' ? 'hidden' : '' }}">
+                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex flex-col lg:flex-row gap-4">
+                                <!-- Date Range Filter -->
+                                <div class="flex items-center space-x-2">
+                                    <label class="text-sm text-gray-600 whitespace-nowrap">Rentang:</label>
+                                    <input type="date" 
+                                           name="tanggal_mulai" 
+                                           value="{{ $tanggalMulai }}" 
+                                           class="border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <span class="text-gray-500">s/d</span>
+                                    <input type="date" 
+                                           name="tanggal_selesai" 
+                                           value="{{ $tanggalSelesai }}" 
+                                           class="border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+                                
+                                <!-- Global Search -->
+                                <div class="flex-1 flex items-center space-x-2">
+                                    <div class="relative flex-1">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                            </svg>
+                                        </div>
+                                        <input type="text" 
+                                               name="search" 
+                                               value="{{ $search }}" 
+                                               placeholder="Cari di semua field..." 
+                                               class="pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:border-indigo-500 focus:ring-indigo-500 w-full">
+                                    </div>
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        Cari
+                                    </button>
+                                    @if($search || $tanggalMulai || $tanggalSelesai)
+                                        <a href="{{ route('surat-masuk-disposisi.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                            Reset
+                                        </a>
+                                    @endif
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Advanced Search -->
+                        <div id="advance-search" class="{{ $advanceSearch === 'on' ? '' : 'hidden' }}">
+                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="bg-gray-50 p-4 rounded-lg space-y-4">
+                                <input type="hidden" name="advance_search" value="on">
+                                
+                                <!-- Date Range -->
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                                        <input type="date" 
+                                               name="tanggal_mulai" 
+                                               value="{{ $tanggalMulai }}" 
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+                                        <input type="date" 
+                                               name="tanggal_selesai" 
+                                               value="{{ $tanggalSelesai }}" 
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <!-- Search Fields -->
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">No Agenda</label>
+                                        <input type="text" 
+                                               name="no_agenda" 
+                                               value="{{ $noAgenda }}" 
+                                               placeholder="Cari berdasarkan No Agenda..."
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Pengirim</label>
+                                        <input type="text" 
+                                               name="pengirim" 
+                                               value="{{ $pengirim }}" 
+                                               placeholder="Cari berdasarkan Pengirim..."
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+                                        <input type="text" 
+                                               name="perihal" 
+                                               value="{{ $perihal }}" 
+                                               placeholder="Cari berdasarkan Perihal..."
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Bagian/Seksi</label>
+                                        <input type="text" 
+                                               name="bagian_seksi" 
+                                               value="{{ $bagianSeksi }}" 
+                                               placeholder="Cari berdasarkan Bagian/Seksi..."
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Disposisi Oleh</label>
+                                        <input type="text" 
+                                               name="disposisi_oleh" 
+                                               value="{{ $disposisiOleh }}" 
+                                               placeholder="Cari berdasarkan Nama Pembuat Disposisi..."
+                                               class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex items-center space-x-2">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                         </svg>
-                                    </div>
-                                    <input type="text" 
-                                           name="search" 
-                                           value="{{ request('search') }}" 
-                                           placeholder="Cari riwayat disposisi..." 
-                                           class="pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:border-indigo-500 focus:ring-indigo-500 w-64">
+                                        Cari Lanjutan
+                                    </button>
+                                    @if($noAgenda || $pengirim || $perihal || $bagianSeksi || $disposisiOleh || $tanggalMulai || $tanggalSelesai)
+                                        <a href="{{ route('surat-masuk-disposisi.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                            Reset Semua
+                                        </a>
+                                    @endif
                                 </div>
-                                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                                <button type="submit" class="inline-flex items-center px-3 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    Cari
-                                </button>
-                                @if(request('search'))
-                                    <a href="{{ route('surat-masuk-disposisi.index', ['tanggal' => $tanggal]) }}" class="inline-flex items-center px-3 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                        Reset
-                                    </a>
-                                @endif
-                            </form>
-                            
-                            <!-- Date Filter -->
-                            <form method="GET" action="{{ route('surat-masuk-disposisi.index') }}" class="flex items-center space-x-2">
-                                <label for="tanggal" class="text-sm text-gray-600 whitespace-nowrap">Tanggal:</label>
-                                <input type="date" 
-                                       id="tanggal" 
-                                       name="tanggal" 
-                                       value="{{ $tanggal }}" 
-                                       class="border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                       onchange="this.form.submit()">
-                                <input type="hidden" name="search" value="{{ request('search') }}">
                             </form>
                         </div>
                     </div>
 
                     <!-- Search Results Info -->
-                    @if(request('search'))
+                    @if($search && $advanceSearch === 'off')
                         <div class="mb-4 text-sm text-gray-600">
-                            Menampilkan hasil pencarian global untuk: <strong>"{{ request('search') }}"</strong>
-                            <span class="ml-1 text-gray-500">(tanpa filter tanggal)</span>
+                            Menampilkan hasil pencarian untuk: <strong>"{{ $search }}"</strong>
+                            @if($tanggalMulai && $tanggalSelesai)
+                                <span class="ml-1">dalam rentang {{ \Carbon\Carbon::parse($tanggalMulai)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($tanggalSelesai)->translatedFormat('d M Y') }}</span>
+                            @endif
                             <span class="ml-1">— {{ $riwayatDisposisi->total() }} hasil ditemukan</span>
+                        </div>
+                    @elseif($advanceSearch === 'on' && ($noAgenda || $pengirim || $perihal || $bagianSeksi || $disposisiOleh))
+                        <div class="mb-4 text-sm text-gray-600">
+                            <strong>Pencarian Lanjutan:</strong>
+                            @if($noAgenda) No Agenda: "{{ $noAgenda }}" @endif
+                            @if($pengirim) Pengirim: "{{ $pengirim }}" @endif
+                            @if($perihal) Perihal: "{{ $perihal }}" @endif
+                            @if($bagianSeksi) Bagian: "{{ $bagianSeksi }}" @endif
+                            @if($disposisiOleh) Disposisi Oleh: "{{ $disposisiOleh }}" @endif
+                            @if($tanggalMulai && $tanggalSelesai)
+                                <span class="ml-1">dalam rentang {{ \Carbon\Carbon::parse($tanggalMulai)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($tanggalSelesai)->translatedFormat('d M Y') }}</span>
+                            @endif
+                            <span class="ml-1">— {{ $riwayatDisposisi->total() }} hasil ditemukan</span>
+                        </div>
+                    @elseif($tanggalMulai && $tanggalSelesai)
+                        <div class="mb-4 text-sm text-gray-600">
+                            Menampilkan disposisi dalam rentang <strong>{{ \Carbon\Carbon::parse($tanggalMulai)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($tanggalSelesai)->translatedFormat('d M Y') }}</strong>
+                            <span class="ml-1">— {{ $riwayatDisposisi->total() }} hasil ditemukan</span>
+                        </div>
+                    @else
+                        <div class="mb-4 text-sm text-gray-600">
+                            Menampilkan <strong>{{ $riwayatDisposisi->total() }} disposisi terbaru</strong>
                         </div>
                     @endif
 
@@ -280,7 +408,11 @@
                             </svg>
                             <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada disposisi</h3>
                             <p class="mt-1 text-sm text-gray-500">
-                                Tidak ada riwayat disposisi untuk tanggal {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}.
+                                @if($search || $advanceSearch === 'on')
+                                    Tidak ada disposisi yang sesuai dengan kriteria pencarian.
+                                @else
+                                    Tidak ada riwayat disposisi untuk rentang waktu yang dipilih.
+                                @endif
                             </p>
                         </div>
                     @endif
@@ -304,4 +436,34 @@
             variant="danger"
         />
     @endforeach
+
+    <!-- JavaScript for Advanced Search Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleCheckbox = document.getElementById('toggle-advance-search');
+            const simpleSearch = document.getElementById('simple-search');
+            const advanceSearch = document.getElementById('advance-search');
+            
+            toggleCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    simpleSearch.classList.add('hidden');
+                    advanceSearch.classList.remove('hidden');
+                } else {
+                    simpleSearch.classList.remove('hidden');
+                    advanceSearch.classList.add('hidden');
+                    
+                    // Reset form when switching back to simple search
+                    const form = advanceSearch.querySelector('form');
+                    if (form) {
+                        // Only reset advance search fields, keep date range
+                        const advanceFields = ['no_agenda', 'pengirim', 'perihal', 'bagian_seksi', 'disposisi_oleh'];
+                        advanceFields.forEach(fieldName => {
+                            const field = form.querySelector(`input[name="${fieldName}"]`);
+                            if (field) field.value = '';
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 </x-app-layout>

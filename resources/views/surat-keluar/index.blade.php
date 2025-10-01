@@ -106,7 +106,18 @@
                                             {{ $surat->surat_keluar_tanggal ? $surat->surat_keluar_tanggal->format('d/m/Y') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ $surat->tujuan }}</div>
+                                            <div class="text-sm text-gray-900">
+                                                @if($surat->tujuan && $surat->tujuan !== '-')
+                                                    {{ $surat->tujuan }}
+                                                @elseif($surat->bagianSeksiTujuan)
+                                                    {{ $surat->bagianSeksiTujuan->bagian_seksi }}
+                                                    @if($surat->unitKerjaTujuan)
+                                                        <div class="text-xs text-gray-500">{{ $surat->unitKerjaTujuan->unit_kerja }}</div>
+                                                    @endif
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $surat->perihal }}">
@@ -209,18 +220,18 @@
                     <!-- Pagination -->
                     @if($suratKeluar->hasPages())
                         <div class="mt-6">
-                            {{ $suratKeluar->links() }}
+                             <x-pagination :paginator="$suratKeluar" />
                         </div>
                     @endif
 
-                    <!-- Table Info -->
+                    {{-- <!-- Table Info -->
                     <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
                         <div>
                             Menampilkan {{ $suratKeluar->firstItem() }} sampai {{ $suratKeluar->lastItem() }} dari {{ $suratKeluar->total() }} surat keluar
                         </div>
                         <div>
                             Halaman {{ $suratKeluar->currentPage() }} dari {{ $suratKeluar->lastPage() }}
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

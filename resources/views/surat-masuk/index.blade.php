@@ -265,14 +265,14 @@
                         </div>
                     @endif
 
-                    <!-- Table Info -->
+                    {{-- <!-- Table Info -->
                     <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
                         <div>
                             Menampilkan {{ $suratMasuk->firstItem() }} sampai {{ $suratMasuk->lastItem() }} dari {{ $suratMasuk->total() }} surat masuk
                         </div>
                         <div>
                             Halaman {{ $suratMasuk->currentPage() }} dari {{ $suratMasuk->lastPage() }}
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
