@@ -86,4 +86,3 @@ Sistem aplikasi web untuk mengelola persuratan di Divisi Human Capital (HC). Dib
 - **users**: Tabel pengguna (custom primary key `user_id`)
 - **surat_masuk**: Tabel surat masuk dengan soft deletes
 - **unit_kerja, bagian_seksi, jabatan**: Tabel referensi (untuk ekspansi fitur)
-
